@@ -45,11 +45,20 @@ Create your Goal, and copy & past it, into Claude Code within the application it
 
 </td>
 </tr>
-</table>
+<tr>
+<td width="260" valign="top">
+<img src="Checklist_review_gif.gif" width="220" alt="Creating a new goal">
+</td>
+<td valign="top">
 
 Checklists
 
 The order of a checklist is its priority. The item at the top matters most and the colour follows the position. Drag an item up or down to change its priority, and its sub-steps move with it. Sub-steps are numbered and fold away.
+
+</td>
+</tr>
+</table>
+
 
 Tags
 
