@@ -1,10 +1,9 @@
-Study&Go Compass
+# Study&Go Compass
 
 A goal tracker built around the Study&Go globe logo. Each cell on the globe holds one goal. The whole app is one HTML file. It has no dependencies and makes no network calls.
 
-!The Compass with goals placed on the globe
 
-How it works
+## How it works
 
 <table>
 <tr>
@@ -13,6 +12,8 @@ How it works
 </td>
 <td valign="top">
 
+
+#### The Compass with goals placed on the globe
 The globe has 50 cells. Click an empty cell to put a goal there, then give it a title, a category you type yourself, a due date and a checklist.
 
 Drag the globe to roll it in any direction. Left alone, it keeps turning on its own.
@@ -57,8 +58,11 @@ The order of a checklist is its priority. The item at the top matters most and t
 
 </td>
 </tr>
-</table>
-
+<tr>
+<td width="260" valign="top">
+<img src="Tag_review_gif.gif" width="220" alt="Creating a new goal">
+</td>
+<td valign="top">
 
 Tags
 
@@ -71,9 +75,14 @@ Tag	Effect on the cell
 
 The List view shows the same goals as a table, with their tags.
 
-Handing a goal to Claude Code
+</td>
+</tr>
+</table>
 
-The pixel crab in the bottom right of the details panel offers to give the selected goal to Claude Code. Say yes and the app copies a brief to the clipboard: the selected goal in full, plus the rest of the globe as context. Paste it into Claude Code.
+
+
+
+
 
 Run it
 
