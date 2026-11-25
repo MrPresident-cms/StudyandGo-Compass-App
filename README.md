@@ -1,7 +1,8 @@
 # Study&Go Compass
 
-A goal tracker built around the Study&Go globe logo. Each cell on the globe holds one goal. The whole app is one HTML file. It has no dependencies and makes no network calls.
+A goal tracker built around the Study&Go globe logo. Each cell on the globe holds one goal. The whole app is one HTML file.
 
+Check it out: https://claude.ai/artifact/XVDvZnh6uE689MTBPf9MYo
 
 ## How it works
 
