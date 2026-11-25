@@ -5,8 +5,9 @@ A goal tracker built around the Study&Go globe logo. Each cell on the globe hold
 ![The Compass with goals placed on the globe](docs/compass-screenshot.webp)
 
 ## How it works
+<img src="globe%20logo%20gif%20V1.gif" width="250" hight="auto">
+<img src="Creating_new_goal_gif.gif" width="250" hight="auto">
 
-![The chrome globe turning](globe%20logo%20gif%20V1.gif)
 
 The globe has 50 cells. Click an empty cell to put a goal there, then give it a title, a category you type yourself, a due date and a checklist. Drag the globe to roll it in any direction. Left alone, it keeps turning on its own.
 
