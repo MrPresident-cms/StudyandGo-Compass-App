@@ -33,6 +33,18 @@ A completed goal turns gold, and the app plays a short chime.
 
 </td>
 </tr>
+<tr>
+<td width="260" valign="top">
+<img src="Give_goal_to_Claude_gif.gif" width="220" alt="Creating a new goal">
+</td>
+<td valign="top">
+
+Feeling lazy? Give your task to Claude Code! 
+
+Create your Goal, and copy & past it, into Claude Code within the application it self! It will copy your goal as your primary task and keep all the rest of your globe as background. 
+
+</td>
+</tr>
 </table>
 
 Checklists
