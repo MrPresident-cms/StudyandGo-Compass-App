@@ -15,7 +15,7 @@ Check it out: https://claude.ai/artifact/XVDvZnh6uE689MTBPf9MYo
 
 
 #### The Compass with goals placed on the globe
-The globe has 50 cells. Click an empty cell to put a goal there, then give it a title, a category you type yourself, a due date and a checklist.
+The globe has 60 cells. Click an empty cell to put a goal there, then give it a title, a category you type yourself, a due date and a checklist.
 
 Drag the globe to roll it in any direction. Left alone, it keeps turning on its own.
 

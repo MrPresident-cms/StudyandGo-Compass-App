@@ -229,6 +229,7 @@ textarea.inp { resize: vertical; line-height: 1.45; }
 .steprow { display: flex; align-items: center; gap: 2px; padding-left: 12px; }
 .steprow .sn { width: 18px; font-size: 12px; margin-right: 4px; }
 .note.small { font-size: 11.5px; }
+.ci.dragging { position: relative; z-index: 6; will-change: transform; }
 body.dragging-ci { user-select: none; cursor: grabbing; }
 body.dragging-ci .grip { cursor: grabbing; }
 .chk { display: flex; align-items: flex-start; gap: 10px; padding: 5px 6px; border-radius: 6px; cursor: pointer; line-height: 1.4; transition: background .15s ease; }
@@ -512,13 +513,13 @@ body.resizing { cursor: col-resize; user-select: none; }
   }
 
   /* ---------- globe cells ----------
-     The globe is a full sphere now: ten meridians by five usable bands, fifty
-     cells, keyed "band-meridian". The list is the fill order, so new goals
+     The globe is a full sphere: ten meridians by six bands, sixty cells,
+     keyed "band-meridian". The list is the fill order, so new goals
      land on the cells that face you in the logo pose before the ones behind. */
   var GEO = (function () {
     var usable = [], byKey = {};
     [5, 4, 6, 3, 7, 2, 8, 1, 9, 0].forEach(function (l) {
-      [2, 1, 3, 0, 4].forEach(function (b) {
+      [2, 1, 3, 0, 4, 5].forEach(function (b) {
         var c = { key: b + '-' + l, b: b, l: l, idx: b * 10 + l };
         usable.push(c);
         byKey[c.key] = c;
@@ -684,7 +685,7 @@ body.resizing { cursor: col-resize; user-select: none; }
     var cur = S.selCell != null ? GEO.byKey[S.selCell] : null;
     if (!cur) { pickCell(GEO.usable[0].key, false); return; }
     // one band up or down, one meridian left or right; the globe turns to follow
-    pickCell(Math.max(0, Math.min(4, cur.b + dy)) + '-' + ((cur.l + dx + 10) % 10), false);
+    pickCell(Math.max(0, Math.min(5, cur.b + dy)) + '-' + ((cur.l + dx + 10) % 10), false);
   }
   function startAdd(cell) {
     var free = (cell != null && GEO.byKey[cell] && !S.todos.some(function (t) { return t.cell === cell; })) ? cell : nextFree();
@@ -2097,54 +2098,104 @@ body.resizing { cursor: col-resize; user-select: none; }
     if (h) setPanel(h.getAttribute('data-resize'), PANEL[h.getAttribute('data-resize')].base);
   });
 
-  /* ---------- checklist drag: the handle carries a subtask and its steps ---------- */
-  var drag = null;
+  /* ---------- checklist drag: the handle carries a subtask and its steps ----------
+     The carried row follows the pointer; the rows it passes slide out of its way.
+     The work happens once per frame, so the pointer never waits on layout. */
+  var drag = null, settling = false;
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function recolor(list) {
     var kids = list.children;
     for (var i = 0; i < kids.length; i++) kids[i].style.setProperty('--p', prio(i, kids.length));
   }
+  function dragFrame() {
+    var d = drag;
+    if (!d) return;
+    d.raf = requestAnimationFrame(dragFrame);
+    if (!d.moved) return;
+    // near the top or bottom of the panel the list scrolls, faster the closer the pointer is
+    var box = $('detail'), br = box.getBoundingClientRect(), edge = 44;
+    if (d.y < br.top + edge) box.scrollTop -= Math.ceil((br.top + edge - d.y) / 4);
+    else if (d.y > br.bottom - edge) box.scrollTop += Math.ceil((d.y - (br.bottom - edge)) / 4);
+    var kids = Array.prototype.slice.call(d.list.children), i, k;
+    var listTop = d.list.getBoundingClientRect().top, total = -d.gap;
+    for (i = 0; i < kids.length; i++) total += kids[i]._dh + d.gap;
+    // the top edge of the carried row, kept inside the list
+    var vt = Math.max(listTop - 6, Math.min(listTop + total - d.item._dh + 6, d.y - d.grab));
+    // it belongs before the first other row whose middle that edge is above
+    var acc = listTop, target = null;
+    for (i = 0; i < kids.length; i++) {
+      k = kids[i];
+      if (k === d.item) continue;
+      if (vt < acc + k._dh / 2) { target = k; break; }
+      acc += k._dh + d.gap;
+    }
+    if (target !== d.item.nextElementSibling) {
+      var was = [];
+      if (!calm) for (i = 0; i < kids.length; i++) if (kids[i] !== d.item) was.push([kids[i], kids[i].getBoundingClientRect().top]);
+      d.list.insertBefore(d.item, target);
+      recolor(d.list);
+      // each row that changed place starts where it was and slides to where it now belongs
+      was.forEach(function (f) {
+        f[0].style.transition = 'none';
+        f[0].style.transform = '';
+        var dy = f[1] - f[0].getBoundingClientRect().top;
+        f[0].style.transform = dy ? 'translateY(' + dy.toFixed(1) + 'px)' : '';
+      });
+      if (was.length) {
+        void d.list.offsetHeight;
+        was.forEach(function (f) { f[0].style.transition = 'transform .16s ease'; f[0].style.transform = ''; });
+      }
+      kids = Array.prototype.slice.call(d.list.children);
+    }
+    var top = listTop;
+    for (i = 0; i < kids.length && kids[i] !== d.item; i++) top += kids[i]._dh + d.gap;
+    d.item.style.transform = 'translateY(' + (vt - top).toFixed(1) + 'px)';
+  }
   function dragMove(e) {
     if (!drag) return;
-    var y = e.clientY;
-    if (Math.abs(y - drag.y0) > 3) drag.moved = true;
-    if (!drag.moved) return;
-    e.preventDefault();
-    var kids = drag.list.children, target = null, i;
-    for (i = 0; i < kids.length; i++) {
-      if (kids[i] === drag.item) continue;
-      var r = kids[i].getBoundingClientRect();
-      if (y < r.top + r.height / 2) { target = kids[i]; break; }
-    }
-    if (target !== drag.item.nextElementSibling) { drag.list.insertBefore(drag.item, target); recolor(drag.list); }
-    var box = $('detail'), br = box.getBoundingClientRect();
-    if (y < br.top + 36) box.scrollTop -= 12; else if (y > br.bottom - 36) box.scrollTop += 12;
+    drag.y = e.clientY;
+    if (Math.abs(drag.y - drag.y0) > 3) drag.moved = true;
+    if (drag.moved) e.preventDefault();
   }
   function dragEnd(e) {
     if (!drag) return;
-    var d = drag;
+    var d = drag, kids = d.list.children, i;
     drag = null;
+    cancelAnimationFrame(d.raf);
     document.removeEventListener('pointermove', dragMove);
     document.removeEventListener('pointerup', dragEnd);
     document.removeEventListener('pointercancel', dragEnd);
     document.body.classList.remove('dragging-ci');
-    d.item.classList.remove('dragging');
-    if (!d.moved) return;
-    if (e && e.type === 'pointercancel') { render(); return; }
-    var ids = [], kids = d.list.children;
-    for (var i = 0; i < kids.length; i++) ids.push(kids[i].getAttribute('data-ci'));
-    orderSubs(ids);
+    function clean() {
+      for (i = 0; i < kids.length; i++) { kids[i].style.transition = ''; kids[i].style.transform = ''; }
+      d.item.classList.remove('dragging');
+    }
+    if (!d.moved) { clean(); return; }
+    if (e && e.type === 'pointercancel') { clean(); render(); return; }
+    var ids = [];
+    for (i = 0; i < kids.length; i++) ids.push(kids[i].getAttribute('data-ci'));
+    if (calm) { clean(); orderSubs(ids); return; }
+    // let go: the row glides into its slot, then the new order is saved
+    settling = true;
+    d.item.style.transition = 'transform .14s ease';
+    d.item.style.transform = '';
+    setTimeout(function () { settling = false; clean(); orderSubs(ids); }, 150);
   }
   app.addEventListener('pointerdown', function (e) {
     var grip = e.target.closest ? e.target.closest('.grip') : null;
-    if (!grip || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    if (!grip || settling || drag || (e.pointerType === 'mouse' && e.button !== 0)) return;
     var item = grip.closest('.ci');
     if (!item) return;
-    drag = { item: item, list: item.parentNode, y0: e.clientY, moved: false };
+    var list = item.parentNode, kids = list.children;
+    for (var i = 0; i < kids.length; i++) kids[i]._dh = kids[i].offsetHeight;
+    drag = { item: item, list: list, y0: e.clientY, y: e.clientY, moved: false, raf: 0,
+      grab: e.clientY - item.getBoundingClientRect().top, gap: parseFloat(getComputedStyle(list).rowGap) || 0 };
     item.classList.add('dragging');
     document.body.classList.add('dragging-ci');
     document.addEventListener('pointermove', dragMove);
     document.addEventListener('pointerup', dragEnd);
     document.addEventListener('pointercancel', dragEnd);
+    drag.raf = requestAnimationFrame(dragFrame);
   });
 
   /* ---------- installed app: the chrome globe is its icon ----------
