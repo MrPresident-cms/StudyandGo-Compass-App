@@ -85,3 +85,8 @@ The List view shows the same goals as a table, with their tags.
 ## Final result:
 <img src="App_review_V6_gif.gif" width="1000" alt="how it looks">
 
+
+
+## Prompts
+
+The prompts used to build the Compass are in [PROMPTS.md](PROMPTS.md), in the order they were written.
