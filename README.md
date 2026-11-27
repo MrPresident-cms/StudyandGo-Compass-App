@@ -70,9 +70,9 @@ The order of a checklist is its priority. The item at the top matters most and t
 A goal can carry three tags, and each one makes its cell pulse on the globe:
 
 Tag	Effect on the cell
-#Most important	red glow, fast pulse
-#Due Soon	light red glow, slower pulse
-#Give2Claude	orange glow, slower pulse
+#Most important	a red line inside the cell that beats like a heart
+#Due Soon	a light red line that breathes slowly
+#Give2Claude	an orange line that breathes slowly
 
 The List view shows the same goals as a table, with their tags.
 
@@ -81,6 +81,16 @@ The List view shows the same goals as a table, with their tags.
 </table>
 
 
+
+## New in this version
+
+- **Priority list.** Open goals are ranked in the left panel. Drag the number to move a goal up or down. The globe shows your number 1 and its first open step under "Next up".
+- **Finished goals become a spiral.** Every finished goal turns into a gold ball on a spiral that climbs and turns slowly. Click a ball to open that goal.
+- **A universe of globes.** Once a globe is 60% done, "Create new globe" appears in the left panel. Your other globes float in the background. Scroll out past the smallest zoom to bring them forward, then click one to go there.
+- **Your own zoom.** Ctrl + and Ctrl - resize the app and it remembers the size. Scroll over the globe to zoom it.
+- **Neon and Shine.** Neon draws a light along every cell edge. Shine adds a glass rim and a soft halo. Both have a switch next to Auto-turn.
+- **Calmer chrome.** A goal in progress fills up inside its cell's frame. The selected goal turns blue-white on the globe and in the spiral. The globe never ends up upside down.
+- **Preview a full globe.** This link under Overall shows what a finished globe looks like without saving anything.
 
 ## Final result:
 <img src="App_review_V6_gif.gif" width="1000" alt="how it looks">

@@ -230,6 +230,65 @@ textarea.inp { resize: vertical; line-height: 1.45; }
 .steprow .sn { width: 18px; font-size: 12px; margin-right: 4px; }
 .note.small { font-size: 11.5px; }
 .ci.dragging { position: relative; z-index: 6; will-change: transform; }
+/* goal priority: the numbered handle in the side list, and the markers on the globe */
+.rk { flex: none; width: 20px; height: 20px; border-radius: 6px; background: var(--p, var(--mid)); color: #FFFFFF; font-size: 11px; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; text-shadow: 0 1px 1px rgba(0, 0, 0, .35); cursor: grab; touch-action: none; }
+.rk.off { background: transparent; cursor: inherit; }
+/* the galaxy: a spiral that climbs, with shaded balls on it */
+.galaxy { flex: none; position: relative; overflow: hidden; margin: 0 10px 4px; }
+.gcap { position: absolute; left: 8px; top: 4px; z-index: 400; font-size: 11px; color: var(--muted); }
+.gs, .gx { position: absolute; inset: 0; }
+.gline { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 200; }
+.gline path { fill: none; stroke-linecap: round; stroke-dasharray: 3 5; }
+.gline .back { stroke: rgba(230, 199, 154, .22); stroke-width: 1.2; }
+.gline .front { stroke: rgba(240, 212, 166, .62); stroke-width: 1.6; }
+.gball { position: absolute; left: 0; top: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; will-change: transform; }
+.gball .gpop { display: block; width: 100%; height: 100%; border-radius: 50%; font-style: normal; font-size: 8.5px; font-weight: 800; line-height: 22px; text-align: center; letter-spacing: -.02em; color: #3A2408;
+  background: radial-gradient(circle at 34% 28%, #FFF8EA 0%, #F7D6A2 20%, #D9A157 52%, #9A6424 82%, #5E3B10 100%);
+  box-shadow: inset -2px -3px 4px rgba(60, 30, 0, .35), 0 3px 6px rgba(0, 0, 0, .5);
+  animation: gxpop .6s cubic-bezier(.2, .9, .3, 1.25) both; animation-delay: var(--d, 0s); }
+.gball.old .gpop { animation: none; }
+.gball:hover .gpop, .gball:focus-visible .gpop { box-shadow: inset -2px -3px 4px rgba(60, 30, 0, .35), 0 3px 6px rgba(0, 0, 0, .5), 0 0 0 2px var(--accent); }
+.gball.sel .gpop { color: #0B2A55; background: radial-gradient(circle at 34% 28%, #FFFFFF 0%, #E8F4FF 22%, #9CCBF6 55%, #3D78C0 85%, #1E4683 100%);
+  box-shadow: inset -2px -3px 4px rgba(0, 20, 60, .3), 0 0 0 2px rgba(255, 255, 255, .9), 0 0 14px rgba(169, 208, 247, .85); }
+@keyframes gxpop { from { transform: scale(0); opacity: 0; } }
+.newglobe { flex: none; width: auto; margin: 2px 10px 6px; }
+.demobar { position: absolute; z-index: 5; top: 14px; right: 16px; display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 12px; border-radius: 10px; border: 1px dashed rgba(240, 196, 140, .6); background: rgba(5, 10, 26, .82); color: var(--gold); font-size: 12px; font-weight: 600; }
+.lnk { align-self: flex-start; padding: 0; border: 0; background: none; color: var(--muted); font-size: 11.5px; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.lnk:hover { color: var(--ink); }
+/* the universe: other globes far behind the one you are on */
+.universe { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.planet { position: absolute; left: 0; top: 0; will-change: transform, opacity, filter; }
+.planet .pimg { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2A3E70, #0B1534 70%); box-shadow: 0 0 0 1px rgba(169, 208, 247, .35), 0 0 24px rgba(80, 140, 230, .25); background-repeat: no-repeat; }
+.planet.shot .pimg { background-color: transparent; box-shadow: 0 0 26px rgba(80, 140, 230, .22); }
+.planet .pl { position: absolute; left: 50%; top: 100%; margin-top: 6px; transform: translateX(-50%); white-space: nowrap; font-size: 11.5px; font-weight: 600; color: var(--stage-text); text-shadow: 0 1px 3px rgba(0, 0, 0, .8); }
+.planet.born .pimg { animation: born 1.4s cubic-bezier(.2, .9, .3, 1.2) both; }
+@keyframes born { from { transform: scale(0); opacity: 0; filter: brightness(2.5); } 60% { filter: brightness(1.6); } }
+.uhint { position: absolute; left: 50%; bottom: 58px; transform: translateX(-50%); padding: 5px 12px; border-radius: 999px; background: rgba(5, 10, 26, .7); color: var(--stage-text); font-size: 12px; opacity: 0; white-space: nowrap; }
+.stage.arriving #gl { animation: glarrive 1.2s cubic-bezier(.2, .8, .3, 1) both; }
+@keyframes glarrive { from { transform: scale(.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gpop, .planet.born .pimg, .stage.arriving #gl { animation: none; } }
+.row.dragging { position: relative; z-index: 6; background: var(--hover); box-shadow: 0 6px 18px var(--shadow); will-change: transform; }
+body.dragging-ci .rk { cursor: grabbing; }
+.glabel .grank { flex: none; min-width: 16px; height: 16px; margin-left: 1px; padding: 0 4px; border-radius: 999px; background: #FFFFFF; color: #081433; font-size: 10.5px; font-weight: 800; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
+.glabel.r1 { background: rgba(5, 10, 26, .92); border-color: rgba(255, 255, 255, .85); box-shadow: 0 0 0 3px rgba(255, 255, 255, .14); }
+.nextup { position: absolute; z-index: 3; top: 14px; left: 16px; max-width: min(380px, 46%); display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; row-gap: 2px; align-items: baseline; padding: 8px 12px 9px; border-radius: 10px; border: 1px solid rgba(169, 208, 247, .30); background: rgba(5, 10, 26, .74); color: var(--ink); text-align: left; cursor: pointer; transition: border-color .15s ease; }
+.nextup:hover { border-color: rgba(169, 208, 247, .65); }
+.nu-k { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--stage-muted); }
+.nu-t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nu-s { grid-column: 2; font-size: 12px; color: var(--stage-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#tipNext { overflow: hidden; text-overflow: ellipsis; }
+/* categories already in use, offered under the field */
+.catsug { display: flex; flex-wrap: wrap; gap: 5px; }
+.catsug:empty { display: none; }
+.sug { min-height: 24px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: border-color .15s ease, color .15s ease; }
+.sug:hover, .sug.on { border-color: var(--accent); color: var(--ink); }
+.sug.on { background: var(--tint); }
+/* the app's own zoom */
+html.zoomed, html.zoomed body { overflow: hidden; }
+html.zoomed .app { width: calc(100% / var(--z)); height: calc(100% / var(--z)); transform: scale(var(--z)); transform-origin: 0 0; }
+.zoomer { display: inline-flex; align-items: center; gap: 2px; }
+.zoomer button { min-width: 22px; height: 20px; padding: 0 5px; border: 0; border-radius: 5px; background: transparent; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.zoomer button:hover { background: var(--hover); color: var(--ink); }
 body.dragging-ci { user-select: none; cursor: grabbing; }
 body.dragging-ci .grip { cursor: grabbing; }
 .chk { display: flex; align-items: flex-start; gap: 10px; padding: 5px 6px; border-radius: 6px; cursor: pointer; line-height: 1.4; transition: background .15s ease; }
@@ -278,14 +337,18 @@ body { background: #050A1A; }
 .lg.done { background: linear-gradient(180deg, #FBE7C8, #D9A050); border-color: var(--gold); }
 .inp { background: rgba(8, 15, 36, .7); }
 .btn { background: rgba(11, 20, 48, .7); }
-.btn.primary { background: linear-gradient(180deg, #E4F0FC 0%, #A9CDF3 46%, #6C9AD2 54%, #BCD8F6 100%); border-color: #CFE3F8; color: var(--accent-ink); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .55), 0 6px 18px rgba(4, 9, 26, .5); }
-.btn.primary:hover { background: linear-gradient(180deg, #F2F8FE 0%, #BFDBF7 46%, #7FA9DC 54%, #CFE4F9 100%); border-color: #E4F0FC; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); box-shadow: none; }
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 .btn.danger { background: var(--danger); }
 .bar > div, .cfill { background: linear-gradient(90deg, #5E8FC8, #CFE3F8); }
 .badge.done, .chip.done { background: linear-gradient(180deg, #FBE7C8, #D9A050); border-color: var(--gold); color: #2A1A05; }
 .chip.done .cd { background: #2A1A05; }
 .row.sel, .lrow.sel, .cat.on, .mi.on { box-shadow: inset 0 0 0 1px rgba(169, 208, 247, .55); }
-.seg.on { background: linear-gradient(180deg, #213873, #152550); }
+.seg.on { background: var(--tint); }
+.side-view { flex: none; padding: 12px 10px 0; }
+.side-view .segs { display: flex; width: 100%; }
+.side-view .seg { flex: 1 1 0; justify-content: center; min-height: 28px; }
+.storewarn { font-size: 12px; font-weight: 600; color: var(--danger-text); }
 .big .n { background: linear-gradient(180deg, #F2F8FE 12%, #8FBBEB 58%, #F0C48C 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .ci.dragging { background: var(--hover); }
 
@@ -304,13 +367,13 @@ body { background: #050A1A; }
 /* mascot dock: an orange pixel helper at the bottom right of the detail panel */
 .detail { overflow: hidden; }
 .detail-body { flex: 1 1 0; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
-.clawd { position: relative; flex: none; display: flex; justify-content: flex-end; padding: 2px 14px 10px; }
-.clawd-btn { width: 128px; height: 72px; padding: 0; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
-.clawd-btn canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+.clawd { position: relative; flex: none; height: 84px; }
+.clawd-btn { position: absolute; right: 46px; bottom: 10px; width: 64px; height: 40px; padding: 0; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }
+#clawdCv { position: absolute; right: 14px; bottom: 10px; width: 128px; height: 72px; display: block; pointer-events: none; image-rendering: pixelated; image-rendering: crisp-edges; }
 /* the talk bubble speaks in Claude Code's voice: a terminal card, monospace, clay orange */
 .bubble { --cc-bg: #1F1E1D; --cc-ink: #ECE9E4; --cc-dim: #9A958E; --cc-clay: #D97757; --cc-ok: #7FBF8E; position: absolute; right: 12px; bottom: calc(100% - 2px); z-index: 6; width: 262px; padding: 10px 12px 11px; border-radius: 6px; background: var(--cc-bg); border: 1px solid var(--cc-clay); box-shadow: 0 12px 30px rgba(0, 0, 0, .6); color: var(--cc-ink); font-family: "Cascadia Code", "Cascadia Mono", Consolas, ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; line-height: 1.5; display: none; flex-direction: column; gap: 6px; }
 .bubble::after { content: ""; position: absolute; right: 60px; bottom: -6px; width: 10px; height: 10px; background: var(--cc-bg); border-right: 1px solid var(--cc-clay); border-bottom: 1px solid var(--cc-clay); transform: rotate(45deg); }
-.clawd:hover .bubble, .clawd:focus-within .bubble, .clawd.open .bubble { display: flex; }
+.clawd.near .bubble, .clawd.open .bubble { display: flex; }
 .bubble .bq { margin: 0; font-weight: 600; }
 .bubble .bq .star { color: var(--cc-clay); margin-right: 7px; }
 .bubble .bq .ok { color: var(--cc-ok); margin-right: 7px; }
@@ -364,15 +427,12 @@ body.resizing { cursor: col-resize; user-select: none; }
       <h1>Study&amp;Go</h1>
       <span>Compass</span>
     </div>
-    <div class="segs">
-      <button type="button" class="seg" id="segMap" data-act="view-map"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><ellipse cx="8" cy="8" rx="2.6" ry="6"></ellipse><path d="M2 8h12"></path></svg>Map</button>
-      <button type="button" class="seg" id="segList" data-act="view-list"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M5.5 4h8M5.5 8h8M5.5 12h8M2.5 4h.01M2.5 8h.01M2.5 12h.01"></path></svg>List</button>
-    </div>
     <div class="menuwrap" id="menuwrap">
       <button type="button" class="btn" id="btnMenu" data-act="menu" aria-haspopup="true" aria-expanded="false"><span class="ell" id="filterLabel">All categories</span><svg class="ico" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 6l4 4 4-4"></path></svg></button>
       <div class="menu" id="menu" hidden></div>
     </div>
     <div class="grow"></div>
+    <span class="storewarn" id="storeWarn" role="status" hidden>Not saving: storage is unavailable here</span>
     <div class="search">
       <svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5"></circle><path d="M10.5 10.5L14 14"></path></svg>
       <input type="search" class="inp" id="search" aria-label="Search goals" placeholder="Search goals" autocomplete="off">
@@ -384,28 +444,40 @@ body.resizing { cursor: col-resize; user-select: none; }
   <div class="cols">
     <aside class="side" id="side" aria-label="Categories and goals">
       <div class="resizer" data-resize="side" role="separator" aria-orientation="vertical" aria-label="Resize the goals panel. Double-click to reset." tabindex="0"></div>
+      <div class="side-view">
+      <div class="segs">
+        <button type="button" class="seg" id="segMap" data-act="view-map"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><ellipse cx="8" cy="8" rx="2.6" ry="6"></ellipse><path d="M2 8h12"></path></svg>Map</button>
+        <button type="button" class="seg" id="segList" data-act="view-list"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M5.5 4h8M5.5 8h8M5.5 12h8M2.5 4h.01M2.5 8h.01M2.5 12h.01"></path></svg>List</button>
+      </div>
+      </div>
       <div class="side-cats">
         <h2 class="sec">Categories</h2>
         <div id="cats"></div>
       </div>
       <div class="hair"></div>
-      <div class="side-head"><h2 class="sec">Goals</h2><span id="shown"></span></div>
+      <div class="side-head"><h2 class="sec">Goals, most important first</h2><span id="shown"></span></div>
       <div class="side-goals" id="goals"></div>
+      <div class="galaxy" id="galaxy" hidden aria-label="Finished goals"><div class="gcap" id="gcap"></div><div class="gs" id="gs"><div class="gx" id="gx"></div></div></div>
+      <button type="button" class="btn block newglobe" id="btnNewGlobe" data-act="globe-create" hidden>Create new globe</button>
       <div class="hair"></div>
       <div class="overall">
         <h2 class="sec">Overall</h2>
         <div class="big"><span class="n" id="doneN">0</span><span class="of" id="ofTotal">of 0 done</span></div>
         <div class="bar"><div id="overallFill" style="width: 0%"></div></div>
         <div class="cap" id="overallNote"></div>
+        <button type="button" class="lnk" id="btnPreview" data-act="preview">Preview a full globe</button>
       </div>
     </aside>
 
     <div class="mid">
       <main class="stage map" id="stageMap" tabindex="0" aria-label="Goal globe. Drag to turn it. Arrow keys move between cells, Enter opens the details, Escape clears the selection.">
+        <div class="universe" id="universe" aria-hidden="true"><div class="uhint" id="uhint">Click a globe to go there · scroll in to come back</div></div>
         <canvas id="gl" aria-hidden="true"></canvas>
         <div class="globe-area" id="globeArea"></div>
         <div id="labels" aria-hidden="true"></div>
-        <div class="tip" id="tip" role="tooltip"><div class="tt" id="tipTitle"></div><div class="tm" id="tipMeta"></div></div>
+        <div class="demobar" id="demoBar" hidden><span>Preview · nothing here is saved</span><button type="button" class="btn mini" data-act="preview-exit">Exit preview</button></div>
+        <button type="button" class="nextup" id="nextUp" data-act="next-up" hidden title="Show this goal"><span class="nu-k">Next up</span><span class="nu-t" id="nextUpT"></span><span class="nu-s" id="nextUpS"></span></button>
+        <div class="tip" id="tip" role="tooltip"><div class="tt" id="tipTitle"></div><div class="tm" id="tipMeta"></div><div class="tm" id="tipNext" hidden></div></div>
         <div class="glfail note" id="glFail" hidden>The chrome globe needs WebGL 2, which is not available here. The List view still works.</div>
         <div class="legend">
           <div class="keys">
@@ -414,7 +486,7 @@ body.resizing { cursor: col-resize; user-select: none; }
             <span><span class="lg open"></span>Open</span>
             <span><span class="lg"></span>Free</span>
           </div>
-          <span class="right"><span class="hintkeys">Drag to roll · Arrow keys move · Enter opens · Esc clears</span><button type="button" class="btn mini" id="btnAuto" data-act="auto" aria-pressed="true"><span class="dot"></span>Auto-turn</button></span>
+          <span class="right"><span class="hintkeys">Drag to roll · Scroll to zoom, further out for the universe</span><button type="button" class="btn mini" id="btnFx" data-act="fx" aria-pressed="true" title="Glass rim, softer highlights and a halo around the globe"><span class="dot"></span>Shine</button><button type="button" class="btn mini" id="btnNeon" data-act="neon" aria-pressed="true" title="Neon edges on every cell"><span class="dot"></span>Neon</button><button type="button" class="btn mini" id="btnAuto" data-act="auto" aria-pressed="true"><span class="dot"></span>Auto-turn</button></span>
         </div>
       </main>
       <main class="stage list" id="stageList" tabindex="0" hidden aria-label="All goals. Arrow keys move between rows, Enter opens the details, Escape clears the selection.">
@@ -425,7 +497,6 @@ body.resizing { cursor: col-resize; user-select: none; }
           </div>
         </div>
       </main>
-      <footer class="status"><span id="footL"></span><span id="footR"></span></footer>
     </div>
 
     <aside class="detail" id="detailPane" aria-label="Goal details">
@@ -433,9 +504,8 @@ body.resizing { cursor: col-resize; user-select: none; }
       <div class="detail-body" id="detail"></div>
       <div class="clawd" id="clawd">
         <div class="bubble" id="clawdBubble" role="status"></div>
-        <button type="button" class="clawd-btn" id="clawdBtn" data-act="clawd" aria-expanded="false" aria-label="Give this goal to Claude Code">
-          <canvas id="clawdCv" width="32" height="18" aria-hidden="true"></canvas>
-        </button>
+        <canvas id="clawdCv" width="32" height="18" aria-hidden="true"></canvas>
+        <button type="button" class="clawd-btn" id="clawdBtn" data-act="clawd" aria-expanded="false" aria-label="Give this goal to Claude Code"></button>
       </div>
     </aside>
   </div>
@@ -476,22 +546,25 @@ body.resizing { cursor: col-resize; user-select: none; }
   }
 
   /* ---------- storage: starts blank, nothing is seeded ---------- */
+  function num(v, lo, hi, dflt) { v = Number(v); return isFinite(v) && v > 0 ? Math.max(lo, Math.min(hi, v)) : dflt; }
   function load() {
-    var blank = { todos: [], view: 'map', sideOpen: true, detailOpen: true, autoTurn: true };
+    var blank = { todos: [], view: 'map', sideOpen: true, detailOpen: true, autoTurn: true, order: [], zoom: 1, zb: null, gz: 1, pw: 0, neon: true, fx: true, globes: 1, globeN: 1 };
     try {
       var raw = window.localStorage.getItem(KEY);
       if (raw) {
         var d = JSON.parse(raw);
         if (d && Array.isArray(d.todos)) {
-          return { todos: d.todos, view: d.view === 'list' ? 'list' : 'map', sideOpen: d.sideOpen !== false, detailOpen: d.detailOpen !== false, autoTurn: d.autoTurn !== false };
+          return { todos: d.todos, view: d.view === 'list' ? 'list' : 'map', sideOpen: d.sideOpen !== false, detailOpen: d.detailOpen !== false, autoTurn: d.autoTurn !== false,
+            order: Array.isArray(d.order) ? d.order : [], zoom: num(d.zoom, 0.5, 1.6, 1), zb: d.zb && typeof d.zb === 'object' ? d.zb : null, gz: num(d.gz, 0.45, 1.15, 1), pw: num(d.pw, 260, 640, 0), neon: d.neon !== false, fx: d.fx !== false, globes: num(d.globes, 1, 99, 1), globeN: num(d.globeN, 1, 99, 1) };
         }
       }
     } catch (e) { storageOk = false; }
     return blank;
   }
   function persist() {
+    if (S && S.demo) return;          // a preview never writes
     try {
-      window.localStorage.setItem(KEY, JSON.stringify({ v: 2, todos: S.todos, view: S.view, sideOpen: S.sideOpen, detailOpen: S.detailOpen, autoTurn: S.autoTurn }));
+      window.localStorage.setItem(KEY, JSON.stringify({ v: 2, todos: S.todos, view: S.view, sideOpen: S.sideOpen, detailOpen: S.detailOpen, autoTurn: S.autoTurn, order: S.order, zoom: S.zoom, zb: S.zb, gz: S.gz, pw: S.pw, neon: S.neon, fx: S.fx, globes: S.globes, globeN: S.globeN }));
       storageOk = true;
     } catch (e) { storageOk = false; }
   }
@@ -499,10 +572,12 @@ body.resizing { cursor: col-resize; user-select: none; }
   var saved = load();
   var S = {
     todos: saved.todos, view: saved.view, sideOpen: saved.sideOpen, detailOpen: saved.detailOpen, autoTurn: saved.autoTurn,
+    order: saved.order, zoom: saved.zoom, zb: saved.zb, gz: saved.gz, pw: saved.pw, neon: saved.neon, fx: saved.fx, globes: saved.globes, globeN: Math.min(saved.globeN, saved.globes), demo: false, uz: 0, uzTo: 0,
     selId: null, selCell: null, hover: null, tip: null, pop: null,
     filter: 'all', query: '', draft: null, confirm: false, menu: false, clawd: false, clawdMsg: '', clawdText: ''
   };
-  var SAVED_KEYS = { todos: 1, view: 1, sideOpen: 1, detailOpen: 1, autoTurn: 1 };
+  var SAVED_KEYS = { todos: 1, view: 1, sideOpen: 1, detailOpen: 1, autoTurn: 1, order: 1, zoom: 1, zb: 1, gz: 1, neon: 1, fx: 1, globes: 1, globeN: 1 };
+  var ZF = 1;   // how much the whole app is scaled on screen right now
   var pendingFocus = null, scrolledFor = null, popTimer = null, formSig = '';
 
   function set(patch) {
@@ -510,6 +585,31 @@ body.resizing { cursor: col-resize; user-select: none; }
     Object.keys(patch).forEach(function (k) { S[k] = patch[k]; if (SAVED_KEYS[k]) save = true; });
     if (save) persist();
     render();
+  }
+
+  /* ---------- zoom ----------
+     The app has its own size. Ctrl + and Ctrl - (or the buttons in the footer) change
+     it and it is remembered. When the window it lives in is zoomed from outside while
+     the app is not the one in use, the app cancels that out, as long as it is still on
+     the same screen; zoomed while it is in use, it follows. */
+  function scr() { var sc = window.screen || {}; return { dpr: window.devicePixelRatio || 1, sw: sc.width || 0, sh: sc.height || 0 }; }
+  var lastScr = scr();
+  function applyZoom() {
+    var now = scr(), b = S.zb;
+    if (!b || !b.dpr || b.sw !== now.sw || b.sh !== now.sh) { b = now; S.zb = now; persist(); }
+    var z = Math.max(0.4, Math.min(2.2, S.zoom * b.dpr / now.dpr));
+    if (Math.abs(z - 1) < 0.005) z = 1;
+    ZF = z;
+    var root = document.documentElement;
+    root.style.setProperty('--z', String(z));
+    root.classList.toggle('zoomed', z !== 1);
+    var zv = $('zoomVal');
+    if (zv) zv.textContent = Math.round(S.zoom * 100) + '%';
+  }
+  function setZoom(z) {
+    S.zoom = Math.max(0.5, Math.min(1.6, Math.round(z * 20) / 20));
+    persist();
+    applyZoom();
   }
 
   /* ---------- globe cells ----------
@@ -533,14 +633,14 @@ body.resizing { cursor: col-resize; user-select: none; }
     var used = {}, changed = false;
     S.todos.forEach(function (t) {
       if (t.cell == null) return;
-      if (GEO.byKey[t.cell] && !used[t.cell]) used[t.cell] = true;
+      if (GEO.byKey[t.cell] && !used[(t.globe || 1) + ':' + t.cell]) used[(t.globe || 1) + ':' + t.cell] = true;
       else { t.cell = null; changed = true; }
     });
     S.todos.forEach(function (t) {
       if (t.cell != null) return;
       for (var i = 0; i < GEO.usable.length; i++) {
         var key = GEO.usable[i].key;
-        if (!used[key]) { t.cell = key; used[key] = true; changed = true; break; }
+        if (!used[(t.globe || 1) + ':' + key]) { t.cell = key; used[(t.globe || 1) + ':' + key] = true; changed = true; break; }
       }
     });
     if (changed) persist();
@@ -562,6 +662,7 @@ body.resizing { cursor: col-resize; user-select: none; }
     }
     return out;
   }
+  function onG(t) { return (t.globe || 1) === (S.globeN || 1); }
   function catName(t) { return (t.cat && String(t.cat).trim()) || 'General'; }
   /* categories are whatever the goals use, in order of first appearance */
   function catList() {
@@ -592,7 +693,7 @@ body.resizing { cursor: col-resize; user-select: none; }
   }
   function nextFree() {
     var used = {};
-    S.todos.forEach(function (t) { if (t.cell != null) used[t.cell] = true; });
+    S.todos.forEach(function (t) { if (t.cell != null && onG(t)) used[t.cell] = true; });
     for (var i = 0; i < GEO.usable.length; i++) if (!used[GEO.usable[i].key]) return GEO.usable[i].key;
     return null;
   }
@@ -633,6 +734,40 @@ body.resizing { cursor: col-resize; user-select: none; }
     return 'rgb(' + [0, 1, 2].map(function (c) { return Math.round(a[c] + (b[c] - a[c]) * f); }).join(', ') + ')';
   }
 
+  /* Goals carry their own priority order, apart from the order they were added in
+     (that one names them T1, T2 and so on). Done goals drop out of the ranking;
+     a goal that was never ranked sits below the ranked ones. */
+  function ranked() {
+    var seen = {}, out = [];
+    (S.order || []).forEach(function (id) {
+      if (seen[id]) return;
+      var t = S.todos.find(function (x) { return x.id === id; });
+      if (t && t.status !== 'done' && onG(t)) { seen[id] = true; out.push(t); }
+    });
+    S.todos.forEach(function (t) { if (t.status !== 'done' && onG(t) && !seen[t.id]) { seen[t.id] = true; out.push(t); } });
+    return out;
+  }
+  /* the first checklist line that is still open */
+  function nextStep(t) {
+    var subs = subsOf(t);
+    for (var i = 0; i < subs.length; i++) if (!subDone(subs[i]) && String(subs[i].text || '').trim()) return String(subs[i].text).trim();
+    return '';
+  }
+  /* ids: the goals on show, in their new order. Goals that are filtered out keep their slots. */
+  function orderGoals(ids) {
+    var inSet = {}, k = 0;
+    ids.forEach(function (id) { inSet[id] = true; });
+    set({ order: ranked().map(function (t) { return inSet[t.id] ? ids[k++] : t.id; }) });
+  }
+  function moveGoal(id, dir) {
+    var m = model(), ids = m.shown.filter(function (t) { return m.rankOf[t.id]; }).map(function (t) { return t.id; });
+    var i = ids.indexOf(id), j = i + dir;
+    if (i === -1 || j < 0 || j >= ids.length) return;
+    ids.splice(j, 0, ids.splice(i, 1)[0]);
+    pendingFocus = '.row[data-id="' + id + '"]';
+    orderGoals(ids);
+  }
+
   function model() {
     var cats = catList(), catBy = {};
     cats.forEach(function (c) { catBy[c.name] = c; });
@@ -643,16 +778,20 @@ body.resizing { cursor: col-resize; user-select: none; }
       counters[c.name] = (counters[c.name] || 0) + 1;
       ordOf[t.id] = counters[c.name];
       labelOf[t.id] = c.code + counters[c.name];
-      if (t.cell != null && GEO.byKey[t.cell]) byCell[t.cell] = t;
+      if (t.cell != null && GEO.byKey[t.cell] && onG(t)) byCell[t.cell] = t;
     });
     var shown = [];
-    cats.forEach(function (c) { S.todos.forEach(function (t) { if (catName(t) === c.name && matches(t, filter)) shown.push(t); }); });
-    var total = S.todos.length;
+    // most important first; done goals follow, in the order they were added
+    var rk = ranked(), rankOf = {};
+    rk.forEach(function (t, i) { rankOf[t.id] = i + 1; if (matches(t, filter)) shown.push(t); });
+    S.todos.forEach(function (t) { if (t.status === 'done' && onG(t) && matches(t, filter)) shown.push(t); });
+    var liveT = S.todos.filter(onG), total = liveT.length;
     return {
       cats: cats, catBy: catBy, filter: filter, counters: counters, labelOf: labelOf, ordOf: ordOf, byCell: byCell,
+      rankOf: rankOf, rankN: rk.length, next: rk[0] || null,
       filtering: filter !== 'all' || !!S.query.trim(), sel: current(), shown: shown, total: total,
-      doneN: S.todos.filter(function (t) { return t.status === 'done'; }).length,
-      progN: S.todos.filter(function (t) { return t.status === 'progress'; }).length
+      doneN: liveT.filter(function (t) { return t.status === 'done'; }).length,
+      progN: liveT.filter(function (t) { return t.status === 'progress'; }).length
     };
   }
 
@@ -688,7 +827,7 @@ body.resizing { cursor: col-resize; user-select: none; }
     pickCell(Math.max(0, Math.min(5, cur.b + dy)) + '-' + ((cur.l + dx + 10) % 10), false);
   }
   function startAdd(cell) {
-    var free = (cell != null && GEO.byKey[cell] && !S.todos.some(function (t) { return t.cell === cell; })) ? cell : nextFree();
+    var free = (cell != null && GEO.byKey[cell] && !S.todos.some(function (t) { return t.cell === cell && onG(t); })) ? cell : nextFree();
     var f = activeFilter();
     var last = S.todos.length ? catName(S.todos[S.todos.length - 1]) : '';
     pendingFocus = '#f-title';
@@ -737,8 +876,8 @@ body.resizing { cursor: col-resize; user-select: none; }
       });
     } else {
       id = uid();
-      if (cell == null || !GEO.byKey[cell] || S.todos.some(function (t) { return t.cell === cell; })) cell = nextFree();
-      todos = S.todos.concat([{ id: id, title: title, cat: cat, status: d.status, notes: d.notes, subs: subs, cell: cell, created: now, completed: d.status === 'done' ? now : null }]);
+      if (cell == null || !GEO.byKey[cell] || S.todos.some(function (t) { return t.cell === cell && onG(t); })) cell = nextFree();
+      todos = S.todos.concat([{ id: id, title: title, cat: cat, status: d.status, notes: d.notes, subs: subs, cell: cell, globe: S.globeN || 1, created: now, completed: d.status === 'done' ? now : null }]);
       if (d.status === 'done') pop = cell;
     }
     var onGlobe = cell != null && !!GEO.byKey[cell];
@@ -889,6 +1028,7 @@ body.resizing { cursor: col-resize; user-select: none; }
     var COLATS = [0, 34, 58, 85, 116, 147, 180].map(function (d) { return d * RAD; });
     var HALF = 28 / (2 * 296);         // half the gap between cells, in radians
     var PITCH = 26 * RAD, ROLL = 21.5 * RAD;
+    var TILT_MIN = -62 * RAD - PITCH, TILT_MAX = 78 * RAD - PITCH;   // how far it tips: far enough to see both caps, never over the top
     function rollV(v) { var c = Math.cos(ROLL), s = Math.sin(ROLL); return [v[0] * c - v[1] * s, v[0] * s + v[1] * c, v[2]]; }
     var POLE0 = rollV([0, Math.cos(PITCH), Math.sin(PITCH)]);
     var E10 = rollV([0, -Math.sin(PITCH), Math.cos(PITCH)]);
@@ -904,6 +1044,7 @@ body.resizing { cursor: col-resize; user-select: none; }
       'uniform vec4 uCellA[60];   // fill state, hover, dim, tag',
       'uniform vec4 uCellB[60];   // progress level',
       'uniform int uSel, uPop;',
+      'uniform float uNeon, uFx;',
       'out vec4 o;',
       'const float PI = 3.14159265;',
       'const float R = ' + R.toFixed(5) + ';',
@@ -960,6 +1101,8 @@ body.resizing { cursor: col-resize; user-select: none; }
       '  float fr = pow(1.0 - max(dot(n, V), 0.0), 3.0);',
       '  vec3 e = env(r);',
       '  vec3 c = vec3(0.040, 0.080, 0.185) + e * 0.035 + fr * vec3(0.05, 0.09, 0.17);',
+      '  // glass reflects little head-on and a lot at a grazing angle (Schlick)',
+      '  c += uFx * (0.04 + 0.96 * pow(1.0 - max(dot(n, V), 0.0), 5.0)) * e * 0.22;',
       '  c = mix(c, vec3(0.46, 0.62, 0.84) * (0.75 + 0.25 * min(e.g, 1.0)), tintAmt);',
       '  return c + hot * vec3(0.07, 0.10, 0.15);',
       '}',
@@ -1035,27 +1178,33 @@ body.resizing { cursor: col-resize; user-select: none; }
       '    if (eL < e) { e = eL; G = normalize(V - N * N.z + vec3(1e-5)); }',
       '',
       '    float solid = max(uSolid, step(2.5, s));',
-      '    float tintAmt = s > 1.5 ? 0.42 : (s > 0.5 ? 0.16 : 0.0);',
+      '    float tintAmt = s > 1.5 ? 0.24 : (s > 0.5 ? 0.16 : 0.0);',
       '    float tube = (s < 0.5) ? TUBE * uFreeTube : TUBE;',
       '    float aa = 1.5 * px / R;',
       '    float inTile = smoothstep(0.0, aa, e);',
-      '    float pulse = 0.65 + 0.35 * sin(uTime * 3.6);',
+      '    float pulse = 0.72 + 0.14 * sin(uTime * 2.2);',
       '    // tag glow: colour, pulse rate and strength by tag',
       '    float tg = uCellA[idx].w;',
-      '    vec3 tcol = tg > 2.5 ? vec3(1.0, 0.56, 0.12) : (tg > 1.5 ? vec3(1.0, 0.56, 0.54) : vec3(1.0, 0.13, 0.10));',
-      '    float tsp = tg > 2.5 ? 2.4 : (tg > 1.5 ? 1.7 : 5.4);',
-      '    float tamp = (tg > 1.5 && tg < 2.5) ? 0.60 : 1.0;',
-      '    float tpulse = tg > 0.5 ? tamp * (uFlow > 0.5 ? 0.30 + 0.70 * (0.5 + 0.5 * sin(uTime * tsp)) : 0.75) : 0.0;',
+      '    vec3 tcol = tg > 2.5 ? vec3(1.0, 0.58, 0.16) : (tg > 1.5 ? vec3(1.0, 0.60, 0.58) : vec3(1.0, 0.20, 0.16));',
+      '    // the strongest tag beats like a heart: two beats, then rest. The other two breathe slowly.',
+      '    float hb = fract(uTime / 1.8);',
+      '    float beat = min(1.0, exp(-pow((hb - 0.10) / 0.055, 2.0)) + 0.75 * exp(-pow((hb - 0.29) / 0.07, 2.0)));',
+      '    float br = 0.5 - 0.5 * cos(uTime * (tg > 2.5 ? 1.35 : 1.85));',
+      '    br = br * br * (3.0 - 2.0 * br);',
+      '    float tamp = (tg > 1.5 && tg < 2.5) ? 0.80 : 1.0;',
+      '    float tpulse = tg > 0.5 ? tamp * (uFlow > 0.5 ? (tg < 1.5 ? 0.38 + 0.62 * beat : 0.22 + 0.78 * br) : 0.7) : 0.0;',
       '',
       '    // outline cell: a round chrome tube along the edge, glass inside',
       '    float t = clamp((e - tube * 0.5) / (tube * 0.5), -1.0, 1.0);',
       '    vec3 nTube = normalize(N * sqrt(max(1.0 - t * t, 0.0)) + G * t * 0.95);',
       '    vec3 tubeCol = chrome(nTube, N, uTint) * (1.0 + 0.25 * hot);',
-      '    tubeCol = mix(tubeCol, tcol * (0.85 + 0.6 * tubeCol), tpulse * 0.85);',
+      '    tubeCol = mix(tubeCol, tcol * (0.55 + 0.8 * tubeCol), tpulse * 0.34 * smoothstep(-0.3, 1.0, t));',
       '    tubeCol = mix(tubeCol, vec3(0.90, 0.96, 1.0) * (0.85 + 0.35 * tubeCol), sel * pulse);',
       '    vec3 interior = glass(N, tintAmt, hot) * mix(0.70, 1.0, smoothstep(tube, tube * 2.6, e));',
       '    interior += sel * pulse * vec3(0.55, 0.75, 1.0) * 0.16 * (1.0 - smoothstep(tube, tube * 4.0, e));',
-      '    interior += tcol * tpulse * (0.10 + 0.34 * (1.0 - smoothstep(tube, tube * 5.0, e)));',
+      '    // the tag light is a line just inside the frame, with a faint wash behind it',
+      '    float rim = exp(-pow((e - tube * 1.22) / (tube * 0.30), 2.0));',
+      '    interior += tcol * tpulse * (rim + 0.06 * (1.0 - smoothstep(tube, tube * 4.0, e)));',
       '    vec3 frame = mix(tubeCol, interior, smoothstep(tube - aa, tube, e));',
       '    // solid cell: one chrome plate with a rounded edge',
       '    float bv = clamp(1.0 - e / (TUBE * 1.5), 0.0, 1.0);',
@@ -1066,19 +1215,32 @@ body.resizing { cursor: col-resize; user-select: none; }
       '    plate = mix(plate, vec3(0.92, 0.97, 1.0), sel * pulse * smoothstep(0.25, 0.9, bv));',
       '',
       '    vec3 gap = glass(N, 0.0, 0.0) * 0.78;',
-      '    // a goal in progress fills with solid chrome from the bottom of its cell',
+      '    // a goal in progress fills up inside its frame: the chrome outline stays whole around it',
       '    float pr = uCellB[idx].x;',
-      '    float vv = clamp((COL[b + 1] - th) / (COL[b + 1] - COL[b]), 0.0, 1.0);',
-      '    float lvl = pr > 0.001 ? smoothstep(pr + 0.012, pr - 0.012, vv) : 0.0;',
-      '    vec3 fillPlate = (chrome(nPlate, N, uTint) * 0.62 + SGBLUE * (0.50 + 0.22 * N.z)) * (1.0 + 0.12 * hot);',
-      '    fillPlate = mix(fillPlate, tcol * (0.85 + 0.6 * fillPlate), tpulse * 0.85 * smoothstep(0.2, 0.9, bv));',
-      '    fillPlate = mix(fillPlate, vec3(0.92, 0.97, 1.0), sel * pulse * smoothstep(0.25, 0.9, bv));',
-      '    fillPlate += vec3(0.80, 0.92, 1.0) * 0.85 * exp(-abs(vv - pr) * 55.0) * step(0.001, pr) * step(pr, 0.995);',
-      '    vec3 cell = mix(mix(frame, fillPlate, lvl * (1.0 - solid)), plate, solid);',
+      '    float bh = COL[b + 1] - COL[b];',
+      '    float mg = (HALF + tube) / bh;   // the share of the band the frame takes, top and bottom',
+      '    float vv = clamp(((COL[b + 1] - th) / bh - mg) / max(1.0 - 2.0 * mg, 0.05), 0.0, 1.0);',
+      '    float lvl = pr > 0.001 ? smoothstep(pr + 0.014, pr - 0.014, vv) : 0.0;',
+      '    float inside = smoothstep(tube - aa, tube + aa, e);',
+      '    float lip = clamp(1.0 - (e - tube) / (TUBE * 0.9), 0.0, 1.0);   // the fill curves up where it meets the frame',
+      '    vec3 nFill = normalize(N * cos(lip * lip * 0.9) + G * sin(lip * lip * 0.9));',
+      '    vec3 fillPlate = (chrome(nFill, N, uTint) * 0.50 + SGBLUE * (0.52 + 0.20 * N.z)) * (1.0 + 0.12 * hot) * mix(0.72, 1.0, smoothstep(tube, tube * 2.2, e));',
+      '    fillPlate += tcol * tpulse * rim * 0.9;',
+      '    fillPlate += sel * pulse * vec3(0.55, 0.75, 1.0) * 0.16 * (1.0 - smoothstep(tube, tube * 4.0, e));',
+      '    fillPlate += vec3(0.80, 0.92, 1.0) * 0.70 * exp(-abs(vv - pr) * 40.0) * step(0.001, pr) * step(pr, 0.995);',
+      '    vec3 cell = mix(mix(frame, fillPlate, lvl * inside * (1.0 - solid)), plate, solid);',
+      '    cell = mix(cell, chrome(nPlate, N, vec3(0.80, 0.91, 1.0)) * 1.05 + vec3(0.04, 0.07, 0.12), sel * 0.9);',
       '    cell = mix(cell, gap, uCellA[idx].z * 0.72);',
       '    vec3 ball = mix(gap, cell, inTile);',
+      '    // neon edge: the outline of every cell traced in light, as an edge detector would draw it',
+      '    float nw = max(tube * 0.085, 1.2 * aa);',
+      '    float nline = exp(-pow(e / nw, 2.0)) + 0.8 * exp(-pow((e - tube) / nw, 2.0));',
+      '    float nglow = 0.22 * exp(-abs(e) / 0.030) + 0.10 * exp(-abs(e - tube) / 0.040);',
+      '    vec3 ncol = s > 2.5 ? GOLD : (tg > 0.5 ? mix(vec3(0.30, 0.74, 1.0), tcol, 0.75) : vec3(0.30, 0.74, 1.0));',
+      '    float namt = (s > 0.5 ? 1.0 : 0.38) * (1.0 + 0.5 * hot) * (1.0 - 0.75 * uCellA[idx].z) * (0.92 + 0.08 * sin(uTime * 1.3 + float(idx)));',
+      '    ball += uNeon * ncol * namt * (nline * 0.95 + nglow);',
       '    // the glow spills into the cell\'s share of the gap around it',
-      '    ball += tcol * tpulse * 0.60 * exp(-max(-e, 0.0) / 0.016) * (1.0 - inTile) * (1.0 - 0.7 * uCellA[idx].z);',
+      '    ball += tcol * tpulse * 0.10 * exp(-max(-e, 0.0) / 0.010) * (1.0 - inTile) * (1.0 - 0.7 * uCellA[idx].z);',
       '    float ba = smoothstep(R, R - px * 1.5, rr);',
       '    col = mix(col, ball, ba);',
       '    a = max(a, ba);',
@@ -1094,7 +1256,14 @@ body.resizing { cursor: col-resize; user-select: none; }
       '      a = max(a, mk);',
       '    }',
       '  }',
-      '  o = vec4(min(col, vec3(1.0)) * a, a);',
+      '  // a soft halo just outside the ball',
+      '  if (rr >= R) { float hl = uFx * 0.20 * exp(-(rr - R) / 0.030); if (hl > a) { col = vec3(0.38, 0.62, 1.0); a = hl; } }',
+      '  // highlights roll off instead of clipping (ACES fit by K. Narkowicz, CC0 / MIT), then one step of dither against banding',
+      '  vec3 x = col * 1.12;',
+      '  vec3 film = clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0.0, 1.0);',
+      '  col = mix(col, film, 0.65 * uFx * smoothstep(0.55, 1.0, max(col.r, max(col.g, col.b))));',
+      '  col += uFx * (hash(gl_FragCoord.xy) - 0.5) / 255.0;',
+      '  o = vec4(clamp(col, 0.0, 1.0) * a, a);',
       '}'
     ].join('\n');
 
@@ -1124,7 +1293,7 @@ body.resizing { cursor: col-resize; user-select: none; }
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     var U = {};
-    ['uRes', 'uCenter', 'uMouse', 'uHalf', 'uTime', 'uSpin', 'uSolid', 'uFlow', 'uBg', 'uRing', 'uFreeTube', 'uPopAmt', 'uPole', 'uE1', 'uE2', 'uTint', 'uDoneTint', 'uCellA', 'uCellB', 'uSel', 'uPop'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+    ['uRes', 'uCenter', 'uMouse', 'uHalf', 'uTime', 'uSpin', 'uSolid', 'uFlow', 'uBg', 'uRing', 'uFreeTube', 'uPopAmt', 'uPole', 'uE1', 'uE2', 'uTint', 'uDoneTint', 'uCellA', 'uCellB', 'uSel', 'uPop', 'uNeon', 'uFx'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
 
     /* ---------- quaternions: the free tumble on top of the logo pose ---------- */
     function qmul(a, b) {
@@ -1147,7 +1316,7 @@ body.resizing { cursor: col-resize; user-select: none; }
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var S = {
       spin: 0, vel: 0, spinTo: null, auto: opt.auto !== false && !reduce,
-      q: [0, 0, 0, 1], w: [0, 0, 0], drag: null, releasedAt: 0, homing: false, focusIdx: null, focusUntil: 0,
+      q: [0, 0, 0, 1], w: [0, 0, 0], tilt: 0, tiltTo: null, neon: 1, fx: 1, drag: null, releasedAt: 0, homing: false, focusIdx: null, focusUntil: 0,
       mouse: [0, 0], mouseTo: [0, 0], ptr: null, hover: -1,
       fill: new Float32Array(60), hot: new Float32Array(60), dim: new Float32Array(60), tag: new Float32Array(60),
       prog: new Float32Array(60), progNow: new Float32Array(60),
@@ -1201,6 +1370,7 @@ body.resizing { cursor: col-resize; user-select: none; }
       S.spinTo = null;
       S.homing = false;
       S.focusIdx = null;
+      S.tiltTo = null;
       canvas.classList.add('dragging');
       try { canvas.setPointerCapture(e.pointerId); } catch (x) {}
     });
@@ -1212,10 +1382,12 @@ body.resizing { cursor: col-resize; user-select: none; }
       if (Math.abs(e.clientX - d.x0) + Math.abs(e.clientY - d.y0) > 4) d.moved = true;
       var now = performance.now(), dx = e.clientX - d.x, dy = e.clientY - d.y, len = Math.hypot(dx, dy);
       if (len > 0 && d.moved) {
-        var ax = [dy / len, dx / len, 0], ang = len / (R * S.half), dt = Math.max(1, now - d.t) / 1000;
-        S.q = qnorm(qmul(qaxis(ax, ang), S.q));
-        var sp = ang / dt;
-        S.w = [S.w[0] * 0.5 + ax[0] * sp * 0.5, S.w[1] * 0.5 + ax[1] * sp * 0.5, 0];
+        // sideways turns it on its own axis, up and down tips it; it never goes over the top
+        var k = 1 / (R * S.half), dt = Math.max(1, now - d.t) / 1000;
+        S.spin += dx * k;
+        S.tilt = Math.max(TILT_MIN, Math.min(TILT_MAX, S.tilt + dy * k));
+        S.q = qaxis([1, 0, 0], S.tilt);
+        d.vs = (d.vs || 0) * 0.5 + (dx * k / dt) * 0.5;
       }
       d.x = e.clientX; d.y = e.clientY; d.t = now;
     });
@@ -1225,10 +1397,10 @@ body.resizing { cursor: col-resize; user-select: none; }
       S.drag = null;
       S.releasedAt = performance.now();
       canvas.classList.remove('dragging');
-      if (S.releasedAt - d.t > 120) S.w = [0, 0, 0];
+      if (d.moved && S.releasedAt - d.t <= 120) S.vel = Math.max(-5, Math.min(5, d.vs || 0));   // let go mid-swing: it keeps turning, then settles
       if (!d.moved && e.type === 'pointerup') {
         S.w = [0, 0, 0];
-        if (opt.onClick) opt.onClick(cellAt(e.clientX, e.clientY));
+        if (opt.onClick) opt.onClick(cellAt(e.clientX, e.clientY), e);
       }
     }
     canvas.addEventListener('pointerup', release);
@@ -1254,25 +1426,10 @@ body.resizing { cursor: col-resize; user-select: none; }
       resize();
       place();
       if (!S.drag) {
-        var wl = Math.hypot(S.w[0], S.w[1], S.w[2]);
-        if (wl > 0.02) {
-          S.q = qnorm(qmul(qaxis([S.w[0] / wl, S.w[1] / wl, S.w[2] / wl], wl * dt), S.q));
-          var k = Math.exp(-dt * 1.5);          // coasts to a stop on its own
-          S.w = [S.w[0] * k, S.w[1] * k, S.w[2] * k];
-        }
-        if (S.homing) {                          // only the Logo pose button asks for this
-          S.q = qhome(S.q, 1 - Math.exp(-dt * 4));
-          if (S.q[0] === 0 && S.q[1] === 0 && S.q[2] === 0) S.homing = false;
-        }
-        if (S.focusIdx != null) {                // roll a hidden cell round to face the viewer
-          basis();
-          var P = dirOf(S.focusIdx), fa = Math.acos(Math.max(-1, Math.min(1, P[2])));
-          if (fa < 0.08 || now > S.focusUntil) S.focusIdx = null;
-          else {
-            var al = Math.hypot(P[1], P[0]);
-            var fx = al > 1e-4 ? [P[1] / al, -P[0] / al, 0] : [0, 1, 0];
-            S.q = qnorm(qmul(qaxis(fx, fa * (1 - Math.exp(-dt * 5))), S.q));
-          }
+        if (S.tiltTo != null) {                  // tipping to show a cell, or back to the logo pose
+          S.tilt += (S.tiltTo - S.tilt) * (1 - Math.exp(-dt * 5));
+          if (Math.abs(S.tiltTo - S.tilt) < 0.002) { S.tilt = S.tiltTo; S.tiltTo = null; }
+          S.q = qaxis([1, 0, 0], S.tilt);
         }
         if (S.spinTo != null) {
           S.spin += (S.spinTo - S.spin) * (1 - Math.exp(-dt * 6));
@@ -1307,6 +1464,8 @@ body.resizing { cursor: col-resize; user-select: none; }
       gl.uniform1f(U.uFlow, reduce ? 0 : 1);
       gl.uniform1f(U.uBg, opt.background ? 1 : 0);
       gl.uniform1f(U.uRing, opt.ring ? 1 : 0);
+      gl.uniform1f(U.uNeon, S.neon ? 1 : 0);
+      gl.uniform1f(U.uFx, S.fx ? 1 : 0);
       gl.uniform1f(U.uFreeTube, opt.freeTube || 1);
       gl.uniform1f(U.uPopAmt, S.popT < 1 ? Math.sin(Math.PI * S.popT) : 0);
       gl.uniform3fv(U.uPole, S.pole);
@@ -1336,16 +1495,31 @@ body.resizing { cursor: col-resize; user-select: none; }
 
     return {
       S: S, LON: LON, cellAt: cellAt, project: project,
+      /* draw another globe's cells once, take the picture, and draw this one again */
+      shot: function (A) {
+        if (canvas.offsetParent === null) return null;
+        var keep = { fill: S.fill, prog: S.prog, progNow: S.progNow, tag: S.tag, dim: S.dim, hot: S.hot, sel: S.sel, popT: S.popT };
+        S.fill = A.fill; S.prog = A.prog; S.progNow = A.prog; S.tag = A.tag; S.dim = new Float32Array(60); S.hot = new Float32Array(60); S.sel = -1; S.popT = 1;
+        cancelAnimationFrame(raf); frame(performance.now());
+        var url = null;
+        try { url = canvas.toDataURL('image/png'); } catch (x) {}
+        var rc = canvas.getBoundingClientRect(), geo = { url: url, w: rc.width, h: rc.height, cx: S.cx, cy: S.cy, rad: R * S.half };
+        Object.keys(keep).forEach(function (k) { S[k] = keep[k]; });
+        cancelAnimationFrame(raf); frame(performance.now());
+        return url ? geo : null;
+      },
       /* if this cell is out of sight, roll the globe until it faces the viewer */
       focus: function (idx) {
         basis();
         if (dirOf(idx)[2] > 0.35) return;
-        S.focusIdx = idx; S.focusUntil = performance.now() + 1600;
-        S.w = [0, 0, 0]; S.homing = false;
+        // turn it until the cell faces you; tip it only if the cell would still be out of sight
+        var b = Math.floor(idx / 10), th = (COLATS[b] + COLATS[b + 1]) / 2, want = -cellLon(idx);
+        S.spinTo = want + Math.round((S.spin - want) / (2 * Math.PI)) * 2 * Math.PI;
+        if (Math.sin(th + PITCH + S.tilt) < 0.55) S.tiltTo = Math.max(TILT_MIN, Math.min(TILT_MAX, Math.PI / 2 - th - PITCH));
       },
       pop: function (idx) { S.pop = idx; S.popT = 0; },
       /* back to the logo pose: no tumble, the nearest tenth of a turn */
-      home: function () { S.w = [0, 0, 0]; S.focusIdx = null; S.homing = true; S.spinTo = Math.round(S.spin / LON) * LON; },
+      home: function () { S.tiltTo = 0; S.spinTo = Math.round(S.spin / LON) * LON; },
       nudge: function (dSpin) { S.spinTo = null; S.vel = 0; S.spin += dSpin; }
     };
   }
@@ -1358,7 +1532,7 @@ body.resizing { cursor: col-resize; user-select: none; }
       tint: [0.62, 0.80, 1.0], doneTint: [1.0, 0.76, 0.40], ring: false, background: false, freeTube: 0.5,
       place: function (r) {
         var a = $('globeArea').getBoundingClientRect();
-        return { cx: a.left - r.left + a.width / 2, cy: a.top - r.top + a.height / 2, half: Math.min(a.width, a.height) / 2 };
+        return { cx: a.left - r.left + a.width / 2, cy: a.top - r.top + a.height / 2, half: Math.min(a.width, a.height) / 2 * S.gz * (1 - 0.5 * (S.uz || 0)) };
       },
       onHover: function (i) {
         var key = i === -1 ? null : keyOf(i);
@@ -1367,7 +1541,8 @@ body.resizing { cursor: col-resize; user-select: none; }
         if (key) S.tip = key;
         renderLift();
       },
-      onClick: function (i) {
+      onClick: function (i, e) {
+        if (i === -1) { planetAt(e); return; }
         if (i === -1 || !GEO.byKey[keyOf(i)]) return;
         var key = keyOf(i);
         // a second click on the same empty cell lets go of it
@@ -1397,11 +1572,15 @@ body.resizing { cursor: col-resize; user-select: none; }
       if (!el) {
         el = document.createElement('div');
         el.className = 'glabel';
-        el.innerHTML = '<span class="gtag"></span><span class="gtitle"></span>';
+        el.innerHTML = '<span class="grank"></span><span class="gtag"></span><span class="gtitle"></span>';
         box.appendChild(el);
         labelEls[g.key] = el;
       }
-      el.firstChild.textContent = m.labelOf[t.id];
+      var rnk = t.status === 'done' ? 0 : (m.rankOf[t.id] || 0);
+      el.firstChild.textContent = rnk && rnk <= 3 ? String(rnk) : '';
+      el.firstChild.hidden = !(rnk && rnk <= 3);
+      el.classList.toggle('r1', rnk === 1);
+      el.childNodes[1].textContent = m.labelOf[t.id];
       el.lastChild.textContent = t.title;
       el.setAttribute('data-dim', dim ? '1' : '0');
     });
@@ -1410,6 +1589,12 @@ body.resizing { cursor: col-resize; user-select: none; }
     G.sel = selIdx;
     if (!globe.levelsSet) { globe.levelsSet = true; for (i = 0; i < 60; i++) G.progNow[i] = G.prog[i]; }
     G.auto = S.autoTurn !== false;
+    G.neon = S.neon !== false ? 1 : 0;
+    G.fx = S.fx !== false ? 1 : 0;
+    var bf = $('btnFx');
+    if (bf) bf.setAttribute('aria-pressed', String(S.fx !== false));
+    var bn = $('btnNeon');
+    if (bn) bn.setAttribute('aria-pressed', String(S.neon !== false));
     var ba = $('btnAuto');
     if (ba) ba.setAttribute('aria-pressed', String(G.auto));
     if (S.selCell !== lastSel) { lastSel = S.selCell; if (selIdx !== -1) globe.focus(selIdx); }
@@ -1422,14 +1607,14 @@ body.resizing { cursor: col-resize; user-select: none; }
       var o = p.z > 0.2 ? Math.min(1, (p.z - 0.2) / 0.2) : 0;
       if (el.getAttribute('data-dim') === '1') o *= 0.35;
       el.style.opacity = o.toFixed(2);
-      el.style.transform = 'translate(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px) translate(-50%,-50%)';
-      el.classList.toggle('full', p.z > 0.68 && g.b >= 1 && g.b <= 3);
+      el.style.transform = 'translate(' + (p.x / ZF).toFixed(1) + 'px,' + (p.y / ZF).toFixed(1) + 'px) translate(-50%,-50%)';
+      el.classList.toggle('full', el.classList.contains('r1') ? p.z > 0.3 : (p.z > 0.68 && g.b >= 1 && g.b <= 3));
     }
     var tg = S.tip != null ? GEO.byKey[S.tip] : null;
     if (tg) {
       var q = globe.project(tg.idx), tip = $('tip');
-      tip.style.left = q.x.toFixed(1) + 'px';
-      tip.style.top = (q.y - globe.S.half * 0.10).toFixed(1) + 'px';
+      tip.style.left = (q.x / ZF).toFixed(1) + 'px';
+      tip.style.top = ((q.y - globe.S.half * 0.10) / ZF).toFixed(1) + 'px';
     }
   }
   function renderLift(m) {
@@ -1442,6 +1627,9 @@ body.resizing { cursor: col-resize; user-select: none; }
     $('tipMeta').textContent = t
       ? m.labelOf[t.id] + ' · ' + (STATUS[t.status] || 'Open') + (subsOf(t).length ? ' · ' + doneSubs(t) + '/' + subsOf(t).length + ' subtasks' : '') + tagList(t).map(function (g) { return ' · ' + g.name; }).join('')
       : 'Click to add a goal here';
+    var tn = t && t.status !== 'done' ? nextStep(t) : '', tne = $('tipNext');
+    if (t && m.rankOf[t.id]) $('tipMeta').textContent = 'Priority ' + m.rankOf[t.id] + ' · ' + $('tipMeta').textContent;
+    if (tne) { tne.hidden = !tn; tne.textContent = tn ? 'First: ' + tn : ''; }
   }
 
   /* ---------- HTML panes ---------- */
@@ -1463,6 +1651,18 @@ body.resizing { cursor: col-resize; user-select: none; }
     $('side').hidden = !S.sideOpen;
     $('detailPane').hidden = !S.detailOpen;
     $('filterLabel').textContent = m.filter === 'all' ? 'All categories' : m.filter;
+    var dbar = $('demoBar');
+    if (dbar) dbar.hidden = !S.demo;
+    var nu = $('nextUp');
+    if (nu) {
+      nu.hidden = !m.next;
+      if (m.next) {
+        var ns = nextStep(m.next);
+        $('nextUpT').textContent = m.labelOf[m.next.id] + ' · ' + m.next.title;
+        $('nextUpS').textContent = ns ? 'First: ' + ns : '';
+        $('nextUpS').hidden = !ns;
+      }
+    }
     $('btnMenu').setAttribute('aria-expanded', String(S.menu));
     var menu = $('menu');
     menu.hidden = !S.menu;
@@ -1473,9 +1673,244 @@ body.resizing { cursor: col-resize; user-select: none; }
         }).join('');
     }
   }
+  /* ---------- the spiral of finished goals ----------
+     A spiral that climbs: the first goal finished sits at the bottom,
+     each next one a ball-width further along a line that winds upwards and widens.
+     The line turns slowly, the way that makes it seem to climb. Places are worked out
+     in script every frame and set in plain 2D, so a click lands on the ball you see;
+     nearer balls sit in front. Hovering holds it still. */
+  var gxSig = null, gxSeen = {}, gxBalls = [], gxPhase = 0, gxHold = false, gxLast = 0, gxGeo = null;
+  var gxCalm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var GX = { r0: 21, grow: 5.0, rise: 5.6, ds: 27, tilt: 0.40, D: 22 };   // rise: height gained per radian
+  function hsh(n) { var x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+  function byDone(a, b) { return String(a.completed || '').localeCompare(String(b.completed || '')); }
+  function renderGalaxy(m) {
+    var wrap = $('galaxy'), gx = $('gx');
+    if (!wrap || !gx) return;
+    var done = m.shown.filter(function (t) { return t.status === 'done'; }).sort(byDone), n = S.globeN || 1;
+    $('gcap').textContent = (S.globes || 1) > 1 ? 'Globe ' + n : '';
+    wrap.hidden = !done.length;
+    var avail = Math.max(160, ($('side').clientWidth || 270) - 20);
+    var sig = n + '#' + avail + '#' + done.map(function (t) { return t.id + ':' + m.labelOf[t.id]; }).join('|');
+    if (sig !== gxSig) {
+      gxSig = sig;
+      var th = 0, html = '', fresh = 0, step = Math.min(0.14, 2.6 / Math.max(1, done.length)), balls = [];
+      done.forEach(function (t) {
+        var r = GX.r0 + GX.grow * th;
+        balls.push({ th: th });
+        th += GX.ds / r;
+        var isNew = !gxSeen[t.id];
+        gxSeen[t.id] = true;
+        html += '<button type="button" class="gball' + (isNew ? '' : ' old') + '" data-act="row" data-id="' + esc(t.id) + '" title="' + esc(m.labelOf[t.id] + ' · ' + t.title) + '" aria-label="' + esc(t.title) + ', finished"' +
+          (isNew ? ' style="--d: ' + (0.15 + fresh++ * step).toFixed(2) + 's"' : '') + '><i class="gpop">' + esc(m.labelOf[t.id]) + '</i></button>';
+      });
+      var to = (balls.length ? balls[balls.length - 1].th : 0) + 1.3, from = -0.9;
+      var rMax = GX.r0 + GX.grow * to, hMax = GX.rise * to;
+      var sc = Math.min(1, avail / (2 * rMax + GX.D + 6));
+      var below = (GX.D * 0.6 + GX.r0 * GX.tilt) * sc + 6, above = (rMax * GX.tilt + GX.D * 0.6) * sc + 20;
+      var height = Math.round(below + hMax * sc + above);
+      gx.innerHTML = '<svg class="gline" aria-hidden="true"><path class="back"></path><path class="front"></path></svg>' + html;
+      wrap.style.height = height + 'px';
+      gxGeo = { balls: balls, from: from, to: to, sc: sc, bs: Math.max(0.82, sc), cx: avail / 2, base: height - below, back: gx.querySelector('.back'), front: gx.querySelector('.front') };
+      gxBalls = gx.querySelectorAll('.gball');
+      galaxyDraw();
+    }
+    for (var k = 0; k < gxBalls.length; k++) gxBalls[k].classList.toggle('sel', gxBalls[k].getAttribute('data-id') === S.selId);
+  }
+  function gxAt(th) {
+    var g = gxGeo, r = GX.r0 + GX.grow * th, a = th + gxPhase;
+    var z = Math.sin(a);                        // 1 faces you, -1 is behind
+    return { x: g.cx + r * Math.cos(a) * g.sc, y: g.base - GX.rise * th * g.sc + r * z * GX.tilt * g.sc, z: z };
+  }
+  function galaxyDraw() {
+    var g = gxGeo;
+    if (!g) return;
+    var back = '', front = '', side = null, th, p;
+    for (th = g.from; th <= g.to + 0.001; th += 0.06) {
+      p = gxAt(th);
+      var f = p.z >= 0, pt = p.x.toFixed(1) + ' ' + p.y.toFixed(1);
+      if (f !== side) { if (f) front += 'M' + pt; else back += 'M' + pt; side = f; }
+      else if (f) front += 'L' + pt; else back += 'L' + pt;
+    }
+    g.back.setAttribute('d', back);
+    g.front.setAttribute('d', front);
+    for (var i = 0; i < gxBalls.length; i++) {
+      p = gxAt(g.balls[i].th);
+      var s = g.bs * (0.84 + 0.16 * p.z);
+      gxBalls[i].style.transform = 'translate(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px) scale(' + s.toFixed(3) + ')';
+      gxBalls[i].style.zIndex = String(Math.round(200 + p.z * 100));
+      gxBalls[i].style.filter = p.z < 0 ? 'brightness(' + (0.78 + 0.22 * (1 + p.z)).toFixed(2) + ')' : '';
+    }
+  }
+  (function galaxyLoop(now) {
+    requestAnimationFrame(galaxyLoop);
+    var dt = Math.min(0.1, ((now || 0) - (gxLast || now || 0)) / 1000);
+    gxLast = now;
+    var w = $('galaxy');
+    if (!gxGeo || !w || w.hidden || document.hidden || w.offsetParent === null) return;
+    if (gxHold || gxCalm) return;
+    gxPhase -= dt * 0.16;                        // about one turn in forty seconds, turning the way that climbs
+    galaxyDraw();
+  })();
+  (function () {
+    var w = $('galaxy');
+    if (!w) return;
+    w.addEventListener('pointerenter', function () { gxHold = true; });
+    w.addEventListener('pointerleave', function () { gxHold = false; });
+    if (window.ResizeObserver) new ResizeObserver(function () { if (gxGeo && Math.max(160, $('side').clientWidth - 20) !== Math.round(gxGeo.cx * 2)) render(); }).observe($('side'));
+  })();
+
+
+  /* ---------- the universe ----------
+     Every other globe sits far off in the background: small, faint, a little out of
+     focus. Zoom out past the smallest globe and they come forward while the one you
+     are on shrinks and softens. Each is a real picture of that globe, taken by the
+     same engine; one that cannot be taken yet shows as a plain dark sphere. */
+  var shots = {}, planetEls = {}, uLast = 0;
+  function cellsOf(n) {
+    var A = { fill: new Float32Array(60), prog: new Float32Array(60), tag: new Float32Array(60) };
+    S.todos.forEach(function (t) {
+      if ((t.globe || 1) !== n || t.cell == null || !GEO.byKey[t.cell]) return;
+      var i = GEO.byKey[t.cell].idx, tl = tagList(t);
+      A.fill[i] = t.status === 'done' ? 3 : (t.status === 'progress' ? 2 : 1);
+      A.prog[i] = t.status === 'progress' ? Math.max(0.1, progOf(t)) : 0;
+      A.tag[i] = tl.length && t.status !== 'done' ? tl[0].lvl : 0;
+    });
+    return A;
+  }
+  function takeShot(n) { if (globe && globe.shot) { var g = globe.shot(cellsOf(n)); if (g) shots[n] = g; } }
+  function doneOn(n) { return S.todos.filter(function (t) { return (t.globe || 1) === n && t.status === 'done'; }).length; }
+  function planetLayout() {
+    var st = $('stageMap'), a = $('globeArea').getBoundingClientRect(), sr = st.getBoundingClientRect();
+    return { cx: (a.left - sr.left + a.width / 2) / ZF, cy: (a.top - sr.top + a.height / 2) / ZF, hs: Math.min(a.width, a.height) / 2 / ZF };
+  }
+  function drawUniverse() {
+    var box = $('universe'), cur = S.globeN || 1, total = S.globes || 1, uz = S.uz || 0;
+    if (!box) return;
+    var L = planetLayout(), k = 0, seen = {};
+    for (var n = 1; n <= total; n++) {
+      if (n === cur) continue;
+      seen[n] = true;
+      var el = planetEls[n];
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'planet';
+        el.innerHTML = '<i class="pimg"></i><span class="pl"></span>';
+        box.appendChild(el);
+        planetEls[n] = el;
+      }
+      if (!shots[n] && !el._tried) { el._tried = true; takeShot(n); }
+      var sh = shots[n], img = el.firstChild;
+      if (sh && el._url !== sh.url) { el._url = sh.url; img.style.backgroundImage = 'url(' + sh.url + ')'; el.classList.add('shot'); }
+      // place: a golden-angle ring around the globe, further out the more globes there are
+      var ang = -2.2 + k * 2.39996, ring = 1 + 0.32 * Math.floor(k / 5);
+      var d = L.hs * (0.16 + 0.30 * uz) * (k >= 5 ? 0.8 : 1);
+      var dist = L.hs * (1.08 - 0.22 * uz) * ring * (k % 2 ? 1.08 : 1);
+      var x = L.cx + Math.cos(ang) * dist, y = L.cy + Math.sin(ang) * dist * 0.72;
+      el.style.width = el.style.height = d.toFixed(1) + 'px';
+      el.style.transform = 'translate(' + (x - d / 2).toFixed(1) + 'px,' + (y - d / 2).toFixed(1) + 'px)';
+      el.style.opacity = (0.32 + 0.68 * uz).toFixed(2);
+      el.style.filter = uz < 0.98 ? 'blur(' + ((1 - uz) * 1.6).toFixed(2) + 'px)' : '';
+      if (sh) {
+        var kx = d / (2 * sh.rad);
+        img.style.backgroundSize = (sh.w * kx).toFixed(1) + 'px ' + (sh.h * kx).toFixed(1) + 'px';
+        img.style.backgroundPosition = (-(sh.cx - sh.rad) * kx).toFixed(1) + 'px ' + (-(sh.cy - sh.rad) * kx).toFixed(1) + 'px';
+      }
+      var dn = doneOn(n);
+      el.lastChild.textContent = 'Globe ' + n + ' · ' + (dn ? dn + ' done' : 'empty');
+      el.lastChild.style.opacity = Math.max(0, (uz - 0.45) / 0.55).toFixed(2);
+      el._n = n;
+      k++;
+    }
+    Object.keys(planetEls).forEach(function (n) { if (!seen[n]) { box.removeChild(planetEls[n]); delete planetEls[n]; } });
+    $('uhint').style.opacity = Math.max(0, (uz - 0.6) / 0.4).toFixed(2);
+    // the globe you are on softens and steps back
+    var gl = $('gl');
+    gl.style.filter = uz > 0.01 ? 'blur(' + (uz * 2.6).toFixed(2) + 'px) brightness(' + (1 - 0.18 * uz).toFixed(2) + ')' : '';
+    $('labels').style.opacity = (1 - 0.85 * uz).toFixed(2);
+  }
+  function planetAt(e) {
+    if (!e || (S.uz || 0) < 0.2) return;
+    for (var n in planetEls) {
+      var r = planetEls[n].getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      if (Math.hypot(e.clientX - cx, e.clientY - cy) <= r.width / 2 + 6) { hopTo(Number(n)); return; }
+    }
+  }
+  function hopTo(n) {
+    if (n === S.globeN) return;
+    takeShot(S.globeN);                      // the globe you leave becomes a picture in the background
+    var st = $('stageMap');
+    st.classList.remove('arriving'); void st.offsetWidth; st.classList.add('arriving');
+    setTimeout(function () { st.classList.remove('arriving'); }, 1300);
+    S.uzTo = 0;
+    gxSig = null;
+    set({ globeN: n, selId: null, selCell: null, draft: null, confirm: false });
+  }
+  function createGlobe() {
+    takeShot(S.globeN);
+    var n = (S.globes || 1) + 1;
+    shots[n] = null;
+    S.uzTo = 1;                              // zoom all the way out, so the new globe is seen arriving
+    set({ globes: n });
+    var tries = 0;
+    (function pop() { var el = planetEls[n]; if (el) { el.classList.remove('born'); void el.offsetWidth; el.classList.add('born'); } else if (tries++ < 20) requestAnimationFrame(pop); })();
+  }
+  (function universeLoop(now) {
+    requestAnimationFrame(universeLoop);
+    var dt = Math.min(0.1, ((now || 0) - (uLast || now || 0)) / 1000);
+    uLast = now;
+    if ((S.globes || 1) < 2) {
+      S.uz = S.uzTo = 0;
+      if (Object.keys(planetEls).length) {     // e.g. after leaving a preview: the background empties again
+        Object.keys(planetEls).forEach(function (n) { planetEls[n].remove(); delete planetEls[n]; });
+        $('gl').style.filter = ''; $('labels').style.opacity = ''; $('uhint').style.opacity = '0';
+      }
+      return;
+    }
+    var st = $('stageMap');
+    if (!st || st.hidden || document.hidden || !globe) return;
+    S.uz = (S.uz || 0) + ((S.uzTo || 0) - (S.uz || 0)) * (1 - Math.exp(-dt * 5));
+    if (Math.abs(S.uz - S.uzTo) < 0.002) S.uz = S.uzTo;
+    drawUniverse();
+  })();
+
+  /* ---------- preview: this globe filled up, on a copy of your goals; nothing is saved ---------- */
+  function startPreview() {
+    if (S.demo) return;
+    S.demoSnap = { todos: S.todos, order: S.order, globeN: S.globeN, globes: S.globes };
+    var base = Date.now() - 70 * 86400000, k = 0, used = {}, n = 0, cur = S.globeN || 1;
+    var mine = S.todos.map(function (t) {
+      if (!onG(t)) return t;
+      if (t.cell != null) used[t.cell] = true;
+      if (t.status === 'done') return t;
+      return Object.assign({}, t, { status: 'done', completed: new Date(base + 40 * 86400000 + (k++) * 3600000).toISOString(),
+        subs: subsOf(t).map(function (x) { return Object.assign({}, x, { done: true, steps: stepsOf(x).map(function (y) { return Object.assign({}, y, { done: true }); }) }); }) });
+    });
+    GEO.usable.forEach(function (g) {
+      if (used[g.key]) return;
+      n++;
+      mine.push({ id: 'pv' + n, title: 'Preview goal ' + n, cat: 'Preview', status: 'done', notes: '', cell: g.key, globe: cur, tags: [], subs: [],
+        created: new Date(base).toISOString(), completed: new Date(base + 41 * 86400000 + (k++) * 3600000).toISOString() });
+    });
+    S.demo = true;
+    set({ todos: mine, selId: null, selCell: null, draft: null, confirm: false });
+  }
+  function endPreview() {
+    if (!S.demo) return;
+    var sn = S.demoSnap;
+    S.todos = sn.todos; S.order = sn.order; S.globeN = sn.globeN; S.globes = sn.globes;
+    S.demo = false; S.demoSnap = null; S.uz = S.uzTo = 0;
+    shots = {};
+    Object.keys(planetEls).forEach(function (n) { planetEls[n]._tried = false; });
+    $('stageMap').classList.remove('arriving');
+    gxSig = null;
+    set({ selId: null, selCell: null, draft: null, confirm: false });
+  }
+
   function renderSide(m) {
     $('cats').innerHTML = m.cats.length ? m.cats.map(function (c, i) {
-      var all = S.todos.filter(function (t) { return catName(t) === c.name; });
+      var all = S.todos.filter(function (t) { return catName(t) === c.name && onG(t); });
+      if (!all.length) return '';
       var done = all.filter(function (t) { return t.status === 'done'; }).length;
       var on = m.filter === c.name || (m.filter === 'all' && !!m.sel && catName(m.sel) === c.name);
       return '<button type="button" class="cat' + (on ? ' on' : '') + '" data-act="cat" data-i="' + i + '" aria-pressed="' + (m.filter === c.name) + '">' +
@@ -1484,14 +1919,24 @@ body.resizing { cursor: col-resize; user-select: none; }
     }).join('') : '<div class="note" style="padding: 2px 8px 4px">No categories yet. Type one when you add your first goal.</div>';
 
     var box = $('goals'), top = box.scrollTop;
-    box.innerHTML = m.shown.length ? m.shown.map(function (t) {
+    var live = m.shown.filter(function (t) { return m.rankOf[t.id]; });
+    box.innerHTML = live.length ? live.map(function (t) {
       var sel = S.selId === t.id;
-      return '<button type="button" class="row' + (sel ? ' sel' : '') + '" data-act="row" data-id="' + esc(t.id) + '" aria-pressed="' + sel + '">' +
+      var rank = m.rankOf[t.id];
+      return '<button type="button" class="row' + (sel ? ' sel' : '') + (rank ? ' rankable' : '') + '" data-act="row" data-id="' + esc(t.id) + '" aria-pressed="' + sel + '"' +
+        (rank ? ' title="Priority ' + rank + '. Drag the number to move it, or press Alt with Arrow up or down."' : '') + '>' +
+        (rank ? '<span class="rk" data-rk="' + esc(t.id) + '" style="--p: ' + prio(rank - 1, m.rankN) + '">' + rank + '</span>' : '<span class="rk off"></span>') +
         '<span class="badge ' + esc(t.status) + '">' + esc(m.labelOf[t.id]) + '</span><span class="rt">' + esc(t.title) + '</span>' + tagDots(t) + '<span class="rmeta">' + doneSubs(t) + '/' + subsOf(t).length + '</span></button>';
-    }).join('') : '<div class="note" style="padding: 2px 8px">' + (m.total ? 'No goals match.' : 'No goals yet. Use New goal, or click a cell on the globe.') + '</div>';
+    }).join('') : '<div class="note" style="padding: 2px 8px">' + (m.total ? (m.shown.length ? 'Nothing open here. Your finished goals are below.' : 'No goals match.') : 'No goals yet. Use New goal, or click a cell on the globe.') + '</div>';
     box.scrollTop = top;
 
-    $('shown').textContent = m.filtering ? m.shown.length + ' of ' + m.total : String(m.total);
+    renderGalaxy(m);
+    var bp = $('btnPreview');
+    if (bp) bp.hidden = !!S.demo;
+    // a new globe can be started once this one is 60% done, from the newest globe
+    var bn = $('btnNewGlobe');
+    if (bn) bn.hidden = !(m.doneN >= 36 && (S.globeN || 1) === (S.globes || 1));
+    $('shown').textContent = m.filtering ? live.length + ' of ' + m.rankN : String(m.rankN);
     $('doneN').textContent = String(m.doneN);
     $('ofTotal').textContent = 'of ' + m.total + ' done';
     $('overallFill').style.width = (m.total ? Math.round((m.doneN / m.total) * 100) : 0) + '%';
@@ -1522,7 +1967,7 @@ body.resizing { cursor: col-resize; user-select: none; }
     L.push('## The rest of the globe, background only');
     var others = 0;
     m.cats.forEach(function (c) {
-      var rows = S.todos.filter(function (o) { return catName(o) === c.name && o.id !== t.id; });
+      var rows = S.todos.filter(function (o) { return catName(o) === c.name && o.id !== t.id && onG(o); });
       if (!rows.length) return;
       L.push(c.name);
       rows.forEach(function (o) {
@@ -1583,7 +2028,19 @@ body.resizing { cursor: col-resize; user-select: none; }
     if (!cv || !cv.getContext) return;
     var ctx = cv.getContext('2d');
     var CW = 32, CH = 18, OX = 9, OY = 9;
-    var COL = { o: '#D97757', d: '#B4573F', e: '#1F1A17', w: '#F3F1EC', b: '#1F1A17', g: '#C9C5BE', k: '#7C7873', z: '#B8B3AB', y: '#F0C48C' };
+    var dockEl = $('clawd'), hit = $('clawdBtn'), btnX = null;
+    /* the canvas is as wide as the panel, so a visitor has room on the left;
+       the crab's home stays at the right */
+    function fit() {
+      var w = Math.max(32, Math.floor((dockEl.clientWidth - 28) / 4));
+      if (w === CW && cv.width === w) return;
+      CW = w; OX = CW - 23;
+      cv.width = CW; cv.height = CH;
+      cv.style.width = (CW * 4) + 'px';
+      draw(cur || ['front', 0, 0, 1]);
+    }
+    var COL = { o: '#D97757', d: '#B4573F', e: '#1F1A17', w: '#F3F1EC', b: '#1F1A17', g: '#C9C5BE', k: '#7C7873', z: '#B8B3AB', y: '#F0C48C',
+      a: '#A9D0F7', n: '#132553', G: '#6FBF5A', H: '#4C9440', s: '#9A6A3A', S: '#6E4A26', h: '#F2C037', i: '#C99A1F', r: '#B5533C', m: '#7E3A2B', x: '#FFFFFF', t: '#9AA3AD', u: '#6B4A2B' };
     var LEGS = ['...o.o..o.o...', '...o.o..o.o...'];
     var SPR = {
       front: ['..oooooooooo..', '..ooeooooeoo..', '..ooeooooeoo..', 'oooooooooooooo', 'oooooooooooooo', '..oooooooooo..'].concat(LEGS),
@@ -1604,6 +2061,9 @@ body.resizing { cursor: col-resize; user-select: none; }
     };
     function flip(rows) { return rows.map(function (r) { return r.split('').reverse().join(''); }); }
     ['turn', 'side', 'sideBlink', 'walkA', 'walkB'].forEach(function (k) { SPR[k + 'R'] = flip(SPR[k]); });
+    SPR.scared = ['..oooooooooo..', '..oweooooewo..', '..owwoooowwo..', 'oooooooooooooo', 'ooooooeeoooooo', '..oooooooooo..'].concat(LEGS);
+    SPR.cowerM = ['..............', '..............', '...oooooooo...', '...oweooewo...', '.oooooeeooooo.', '.oooooooooooo.', '...oooooooo...', '....o.oo.o....'];
+    SPR.cowerS = ['..............', '..............', '..............', '..............', '....oooooo....', '...oeooooeo...', '..oooooooooo..', '....o.oo.o....'];
     /* props are drawn over the crab, placed from its top-left corner */
     var PROP = {
       ball: ['wbw', 'bwb', 'wbw'],
@@ -1618,6 +2078,26 @@ body.resizing { cursor: col-resize; user-select: none; }
       bit: ['y'],
       bit2: ['w']
     };
+    /* the small globe, three sizes, three turns of its meridian */
+    PROP.gl3 = ['.a.', 'aaa', '.a.'];
+    PROP.gl5A = ['.aaa.', 'aanna', 'aaaaa', 'aanna', '.aaa.'];
+    PROP.gl5B = ['.aaa.', 'anana', 'aaaaa', 'anana', '.aaa.'];
+    PROP.gl5C = ['.aaa.', 'annaa', 'aaaaa', 'annaa', '.aaa.'];
+    PROP.gl7A = ['..aaa..', '.aanna.', 'anannna', 'aaaaaaa', 'anannna', '.aanna.', '..aaa..'];
+    PROP.gl7B = ['..aaa..', '.anana.', 'annanna', 'aaaaaaa', 'annanna', '.anana.', '..aaa..'];
+    PROP.gl7C = ['..aaa..', '.annaa.', 'annnana', 'aaaaaaa', 'annnana', '.annaa.', '..aaa..'];
+    /* building: hard hat, hammer, bricks */
+    PROP.hat = ['...hhhhhh...', '..hhwhhhhh..', 'iiiiiiiiiiii'];
+    PROP.hamUp = ['..tt', '..tt', '.u..', 'u...'];
+    PROP.hamDown = ['uutt', '..tt'];
+    PROP.brickA = ['rrmrrr', 'mmmmmm'];
+    PROP.brickB = ['rrrrmr', 'mmmmmm'];
+    /* the visitor: same build as the crab, green, one eye in the middle */
+    PROP.stick = ['Ssssssssssss'];
+    PROP.alA = ['..GGGGGGGGGG..', '..GGGGwwGGGG..', '..GGGGweGGGG..', 'GGGGGGGGGGGGGG', 'GGGGGGGGGGGGGG', '..HHHHHHHHHH..', '...G.G..G.G...', '...G.G..G.G...'];
+    PROP.alB = PROP.alA.slice(0, 6).concat(['...G.G..G.G...', '....G....G....']);
+    PROP.alHit = PROP.alA.map(function (r) { return r.replace(/[GHwe]/g, 'x'); });
+    PROP.alDead = PROP.alA.slice().reverse().map(function (r) { return r.replace(/w/g, 'e'); });
 
     function draw(step) {
       var rows = SPR[step[0]] || SPR.front, ox = OX + step[1], oy = OY + step[2], x, y, c, i;
@@ -1636,7 +2116,8 @@ body.resizing { cursor: col-resize; user-select: none; }
       }
       var props = step[4] || [];
       for (i = 0; i < props.length; i++) {
-        var pr = PROP[props[i][0]], px = OX + step[1] + props[i][1], py = OY + props[i][2];
+        // a prop sits beside the crab, unless its fifth value pins it to the canvas itself
+        var pr = PROP[props[i][0]], px = (props[i][4] ? 0 : OX + step[1]) + props[i][1], py = OY + props[i][2];
         ctx.globalAlpha = props[i][3] == null ? 1 : props[i][3];
         for (y = 0; y < pr.length; y++) {
           for (x = 0; x < pr[y].length; x++) {
@@ -1648,14 +2129,20 @@ body.resizing { cursor: col-resize; user-select: none; }
         }
         ctx.globalAlpha = 1;
       }
+      // the part you can point at and click travels with the crab
+      if (step[1] !== btnX) { btnX = step[1]; hit.style.right = (46 - btnX * 4) + 'px'; }
     }
 
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var cur = null;
+    fit();
     draw(['front', 0, 0, 1]);
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(dockEl); else window.addEventListener('resize', fit);
     if (reduce) return;
 
     /* a routine is a list of [pose, dx, dy, ticks, props] */
-    var queue = [], pos = 0, left = 0, cur = ['front', 0, 0, 1], x0 = 0, asleep = false;
+    var queue = [], pos = 0, left = 0, x0 = 0, asleep = false;
+    cur = ['front', 0, 0, 1];
     function add(pose, dx, dy, ticks, props) { queue.push([pose, dx, dy, ticks, props]); }
     function idle(ticks) {
       var t = ticks;
@@ -1747,9 +2234,98 @@ body.resizing { cursor: col-resize; user-select: none; }
       add('front', x0, 0, 2, [b]);
       hop(1);
     }
+    /* a small spinning globe comes down over its head and grows as it nears. The crab
+       shrinks and shakes; the globe is gone; it stands up as if nothing happened. */
+    function globeScare() {
+      var f = 0, i;
+      var g3 = function (y) { return [['gl3', 6, y]]; };
+      var g5 = function (y, al) { f++; return [['gl5' + 'ABC'.charAt(f % 3), 5, y, al]]; };
+      var g7 = function (y, al) { f++; return [['gl7' + 'ABC'.charAt(f % 3), 4, y, al]]; };
+      add('front', x0, 0, 3, g3(-9)); add('blink', x0, 0, 2, g3(-9)); add('front', x0, 0, 2, g3(-8));
+      add('up', x0, -1, 1, g3(-8)); add('scared', x0, 0, 4, g5(-9));
+      for (i = 0; i < 6; i++) add('scared', x0 + (i % 2), 0, 2, g5(-9 + Math.floor(i / 2)));
+      for (i = 0; i < 9; i++) add('cowerM', x0 + (i % 2), 0, 2, g7(-9 + Math.floor(i / 3)));
+      for (i = 0; i < 20; i++) add('cowerS', x0 + (i % 2), 0, 1, g7(i < 5 ? -6 : -5));
+      add('cowerS', x0, 0, 2, g7(-5, 0.6)); add('cowerS', x0, 0, 2, g5(-4, 0.35)); add('cowerS', x0, 0, 1, [['bit2', 7, -2, 0.6]]);
+      add('cowerS', x0, 0, 8); add('cowerM', x0, 0, 5); add('front', x0, 0, 4); add('blink', x0, 0, 2); add('front', x0, 0, 6);
+    }
+    /* hard hat on, three bricks laid beside it with a hammer, a look at the work, tidy up */
+    function build() {
+      var hat = function (y, al) { return ['hat', 1, y, al]; }, bricks = [], n, k;
+      add('front', x0, 0, 2, [hat(-9)]); add('front', x0, 0, 1, [hat(-6)]); add('front', x0, 0, 1, [hat(-4)]);
+      add('squat', x0, 0, 2, [hat(-1)]); add('front', x0, 0, 4, [hat(-2)]);
+      for (n = 0; n < 3; n++) {
+        var by = 6 - n * 2, name = n % 2 ? 'brickB' : 'brickA';
+        add('front', x0, 0, 1, bricks.concat([[name, 15, by - 4, 0.6], hat(-2)]));
+        bricks = bricks.concat([[name, 15, by]]);
+        add('front', x0, 0, 2, bricks.concat([hat(-2)]));
+        for (k = 0; k < 3; k++) {
+          add(n === 2 ? 'up' : 'front', x0, 0, 2, bricks.concat([['hamUp', 13, by - 6], hat(-2)]));
+          add(n === 2 ? 'up' : 'typeA', x0, 0, 1, bricks.concat([['hamDown', 13, by - 2], ['bit2', 19, by - 3, 0.9], hat(-2)]));
+          add(n === 2 ? 'up' : 'typeA', x0, 0, 1, bricks.concat([['hamDown', 13, by - 2], ['bit', 20, by - 4, 0.6], hat(-2)]));
+        }
+      }
+      add('front', x0, 0, 3, bricks.concat([hat(-2)]));
+      add('turnR', x0, 0, 2, bricks.concat([hat(-2)])); add('sideR', x0, 0, 8, bricks.concat([hat(-2)]));
+      add('sideBlinkR', x0, 0, 2, bricks.concat([hat(-2)])); add('sideR', x0, 0, 4, bricks.concat([hat(-2)])); add('turnR', x0, 0, 2, bricks.concat([hat(-2)]));
+      add('squat', x0, 0, 2, bricks.concat([hat(-1)])); add('up', x0, -2, 1, bricks.concat([hat(-4)])); add('up', x0, -3, 2, bricks.concat([hat(-5)]));
+      add('up', x0, -1, 1, bricks.concat([hat(-3)])); add('squat', x0, 0, 2, bricks.concat([hat(-1)]));
+      var fade = function (al) { return bricks.map(function (b) { return [b[0], b[1], b[2], al]; }); };
+      add('front', x0, 0, 3, bricks.concat([hat(-2)]));
+      add('front', x0, 0, 2, fade(0.6).concat([hat(-2)])); add('front', x0, 0, 2, fade(0.3).concat([hat(-3)]));
+      add('front', x0, 0, 1, [hat(-5)]); add('front', x0, 0, 1, [hat(-8, 0.5)]); add('front', x0, 0, 4);
+    }
+    /* a green one-eyed visitor walks in on the left. The crab backs off, finds a long
+       stick, charges and runs it through, then walks home. */
+    function alien() {
+      var ax = -14, x = x0, i, n = 0;
+      var A = function (pose, al) { return ['al' + pose, ax, 0, al == null ? 1 : al, 1]; };
+      var walk = function () { n++; return A(n % 2 ? 'A' : 'B'); };
+      var ST = ['stick', -12, 4];
+      // it walks in; the crab has not seen it yet
+      for (i = 0; i < 9; i++) { ax += 1; add(i === 5 ? 'blink' : 'front', x, 0, 2, [walk()]); }
+      add('turn', x, 0, 2, [walk()]);
+      for (i = 0; i < 4; i++) { ax += 1; add('side', x, 0, 2, [walk()]); }
+      // a start, then slowly backwards, sweating
+      add('up', x, -2, 1, [A('A')]); add('up', x, -3, 2, [A('A')]); add('up', x, -1, 1, [A('A')]);
+      var back = Math.max(0, Math.min(6, 8 - x));
+      for (i = 0; i < back; i++) {
+        x += 1; if (i % 2) ax += 1;
+        add(i % 2 ? 'walkA' : 'walkB', x, 0, 4, [walk(), ['bit2', 12, -2 + (i % 3), 0.9]]);
+      }
+      add('side', x, 0, 2, [A('A')]); add('sideBlink', x, 0, 2, [A('B')]);
+      // the stick
+      add('squat', x, 0, 3, [A('A'), ['stick', 1, 7]]);
+      add('side', x, 0, 4, [A('B'), ST]); add('sideBlink', x, 0, 2, [A('A'), ST]);
+      // the charge: it stops when the tip is well inside
+      var stop = ax + 16 - OX, touch = ax + 26 - OX;
+      while (x > stop) {
+        x = Math.max(stop, x - 2); n++;
+        add(n % 2 ? 'walkA' : 'walkB', x, 0, 1, [A(x <= touch && n % 2 ? 'Hit' : 'A'), ST]);
+      }
+      add('side', x, 0, 2, [A('Hit'), ST]); add('side', x, 0, 2, [A('A'), ST]); add('side', x, 0, 2, [A('Hit'), ST]);
+      // the stick comes out; the visitor tips over and fades
+      x += 2; add('side', x, 0, 2, [A('A'), ST]);
+      x += 2; add('side', x, 0, 8, [A('Dead'), ST]);
+      add('side', x, 0, 3, [A('Dead', 0.65), ['bit', -8, 2, 0.8], ST]);
+      add('side', x, 0, 3, [A('Dead', 0.4), ['bit2', -11, 0, 0.6], ST]);
+      add('side', x, 0, 3, [A('Dead', 0.15), ST]);
+      add('turn', x, 0, 2, [['stick', -12, 4, 0.5]]);
+      // a hop, then home
+      x0 = x; add('front', x, 0, 3); hop(1);
+      add('turnR', x, 0, 2);
+      n = 0;
+      while (x < 0) { x += 1; n++; add(n % 2 ? 'walkAR' : 'walkBR', x, 0, 2); }
+      while (x > 0) { x -= 1; n++; add(n % 2 ? 'walkA' : 'walkB', x, 0, 2); }
+      add('turnR', x, 0, 2); add('front', x, 0, 5);
+      x0 = 0;
+    }
     function next() {
-      var r = Math.random();
-      if (x0 !== 0 && r < 0.35) scuttle();
+      var r = Math.random(), st = Math.random();
+      if (st < 0.06 && x0 <= 2) build();
+      else if (st < 0.12) globeScare();
+      else if (st < 0.16 && CW >= 52) alien();
+      else if (x0 !== 0 && r < 0.35) scuttle();
       else if (r < 0.26) look();
       else if (r < 0.42) hop(1);
       else if (r < 0.58) scuttle();
@@ -1783,14 +2359,16 @@ body.resizing { cursor: col-resize; user-select: none; }
 
     /* it notices you: a hop when the pointer arrives, a wave when clicked */
     function interrupt(fn) { queue = []; pos = 0; left = 0; fn(); idle(24); }
-    var dock = $('clawd');
-    dock.addEventListener('pointerenter', function () { if (!greeted) { greeted = true; interrupt(function () { hop(1); }); } });
-    dock.addEventListener('pointerleave', function () { greeted = false; });
+    hit.addEventListener('pointerenter', function () { if (!greeted) { greeted = true; interrupt(function () { hop(1); }); } });
+    hit.addEventListener('pointerleave', function () { greeted = false; });
     $('clawdBtn').addEventListener('click', function () { interrupt(wave); });
     clawdAct = function (name) {
       if (name === 'laptop') interrupt(laptop);
       else if (name === 'football') interrupt(football);
       else if (name === 'sleep') interrupt(sleep);
+      else if (name === 'globe') interrupt(globeScare);
+      else if (name === 'build') interrupt(build);
+      else if (name === 'alien') interrupt(alien);
     };
   }
 
@@ -1816,20 +2394,28 @@ body.resizing { cursor: col-resize; user-select: none; }
   var GRIP = '<svg viewBox="0 0 8 14" width="8" height="14" aria-hidden="true"><circle cx="2" cy="3" r="1.1"></circle><circle cx="6" cy="3" r="1.1"></circle><circle cx="2" cy="7" r="1.1"></circle><circle cx="6" cy="7" r="1.1"></circle><circle cx="2" cy="11" r="1.1"></circle><circle cx="6" cy="11" r="1.1"></circle></svg>';
   function recentHtml(m) {
     if (!m.total) return '';
-    var rec = S.todos.filter(function (t) { return t.status === 'done' && t.completed; }).slice()
+    var rec = S.todos.filter(function (t) { return t.status === 'done' && t.completed && onG(t); }).slice()
       .sort(function (a, b) { return a.completed < b.completed ? 1 : (a.completed > b.completed ? -1 : 0); }).slice(0, 3);
     return '<div class="hair"></div><div class="blk tight"><h3 class="sec">Recently completed</h3>' +
       (rec.length ? '<div class="recent">' + rec.map(function (t) {
         return '<button type="button" class="rrow" data-act="row" data-id="' + esc(t.id) + '"><span class="rt">' + esc(t.title) + '</span><span class="rd">' + fmt(t.completed) + '</span></button>';
       }).join('') + '</div>' : '<div class="note">Nothing completed yet.</div>') + '</div>';
   }
+  function catSugHtml(cats, typed) {
+    var q = String(typed || '').trim().toLowerCase();
+    // while you type, only the ones that match; once it is one of them (or empty), all of them
+    var exact = cats.some(function (c) { return c.name.toLowerCase() === q; });
+    return cats.filter(function (c) { return !q || exact || c.name.toLowerCase().indexOf(q) !== -1; }).map(function (c) {
+      return '<button type="button" class="sug' + (c.name.toLowerCase() === q ? ' on' : '') + '" data-act="cat-pick" data-name="' + esc(c.name) + '">' + esc(c.name) + '</button>';
+    }).join('');
+  }
   function formHtml(m) {
     var d = S.draft;
     return '<div class="blk" style="gap: 12px; padding-top: 14px">' +
       '<h2 class="title">' + (d.id ? 'Edit goal' : 'New goal') + '</h2>' +
       '<div class="field"><label for="f-title">Title</label><input id="f-title" class="inp" placeholder="What needs to happen?" autocomplete="off" value="' + esc(d.title) + '"><div class="err" id="errTitle" role="alert" hidden>Give the goal a title first.</div></div>' +
-      '<div class="field"><label for="f-cat">Category</label><input id="f-cat" class="inp" list="cat-options" autocomplete="off" placeholder="Type your own or pick one" value="' + esc(d.cat) + '">' +
-      '<datalist id="cat-options">' + m.cats.map(function (c) { return '<option value="' + esc(c.name) + '"></option>'; }).join('') + '</datalist>' +
+      '<div class="field"><label for="f-cat">Category</label><input id="f-cat" class="inp" autocomplete="off" placeholder="Type your own or pick one" value="' + esc(d.cat) + '">' +
+      '<div class="catsug" id="catSug" aria-label="Categories you already use">' + catSugHtml(m.cats, d.cat) + '</div>' +
       '<div class="err" id="errCat" role="alert" hidden>Type a category for this goal.</div></div>' +
       '<div class="field"><label for="f-status">Status</label><select id="f-status" class="inp">' +
       ['open', 'progress', 'done'].map(function (s) { return '<option value="' + s + '"' + (d.status === s ? ' selected' : '') + '>' + STATUS[s] + '</option>'; }).join('') + '</select></div>' +
@@ -1917,8 +2503,9 @@ body.resizing { cursor: col-resize; user-select: none; }
     box.scrollTop = top;
   }
   function renderFooter(m) {
-    $('footL').textContent = m.total + (m.total === 1 ? ' goal' : ' goals') + ' · ' + m.doneN + ' done · ' + m.progN + ' in progress · ' + GEO.usable.length + ' cells';
-    $('footR').textContent = (storageOk ? 'Saved on this device' : 'Storage is unavailable here, changes last until this window closes') + ' · ' + fmt(new Date().toISOString());
+    // the status line is gone; only a failure to save still gets a word, in the top bar
+    var w = $('storeWarn');
+    if (w) w.hidden = storageOk;
   }
 
   function render() {
@@ -1941,6 +2528,7 @@ body.resizing { cursor: col-resize; user-select: none; }
   /* ---------- events ---------- */
   var app = $('app');
   app.addEventListener('click', function (e) {
+    if (dragGuard > Date.now()) { dragGuard = 0; return; }   // the click that ends a drag picks nothing
     var el = e.target.closest('[data-act]');
     if (!el) { if (S.menu && !e.target.closest('#menuwrap')) set({ menu: false }); return; }
     var act = el.getAttribute('data-act'), id = el.getAttribute('data-id'), i = Number(el.getAttribute('data-i'));
@@ -1949,6 +2537,8 @@ body.resizing { cursor: col-resize; user-select: none; }
     switch (act) {
       case 'toggle-side': set({ sideOpen: !S.sideOpen }); break;
       case 'auto': set({ autoTurn: !S.autoTurn }); break;
+      case 'neon': set({ neon: S.neon === false }); break;
+      case 'fx': set({ fx: S.fx === false }); break;
       case 'toggle-detail': set({ detailOpen: !S.detailOpen }); break;
       case 'view-map': set({ view: 'map' }); break;
       case 'view-list': S.hover = null; set({ view: 'list' }); break;
@@ -1956,6 +2546,28 @@ body.resizing { cursor: col-resize; user-select: none; }
       case 'filter': cats = catList(); set({ filter: i >= 0 && cats[i] ? cats[i].name : 'all', menu: false }); break;
       case 'cat': cats = catList(); if (cats[i]) set({ filter: activeFilter() === cats[i].name ? 'all' : cats[i].name }); break;
       case 'row': pickTodo(id, true); break;
+      case 'preview': startPreview(); break;
+      case 'preview-exit': endPreview(); break;
+      case 'globe-create': createGlobe(); break;
+      case 'next-up':
+        var nm = model();
+        if (nm.next) {
+          pickTodo(nm.next.id, true);
+          if (globe && nm.next.cell != null && GEO.byKey[nm.next.cell]) globe.focus(GEO.byKey[nm.next.cell].idx);
+        }
+        break;
+      case 'zoom-in': setZoom(S.zoom + 0.1); break;
+      case 'zoom-out': setZoom(S.zoom - 0.1); break;
+      case 'zoom-reset': setZoom(1); break;
+      case 'cat-pick':
+        if (S.draft) {
+          S.draft.cat = el.getAttribute('data-name') || '';
+          showErr('');
+          var fc = $('f-cat'), cs0 = $('catSug');
+          if (fc) { fc.value = S.draft.cat; fc.focus(); }
+          if (cs0) cs0.innerHTML = catSugHtml(catList(), S.draft.cat);
+        }
+        break;
       case 'add': startAdd(null); break;
       case 'add-here': startAdd(S.selCell); break;
       case 'edit': startEdit(); break;
@@ -1977,7 +2589,7 @@ body.resizing { cursor: col-resize; user-select: none; }
       case 'fold': toggleFold(id); break;
       case 'clawd': S.clawd = !S.clawd; if (!S.clawd) S.clawdMsg = ''; renderClawd(); break;
       case 'clawd-copy': giveToClaude(); break;
-      case 'clawd-close': S.clawd = false; S.clawdMsg = ''; renderClawd(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); break;
+      case 'clawd-close': S.clawd = false; S.clawdMsg = ''; $('clawd').classList.remove('near'); renderClawd(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); break;
       case 'tag': toggleTag(id); break;
       case 'step-add':
         if (S.draft) {
@@ -2005,7 +2617,7 @@ body.resizing { cursor: col-resize; user-select: none; }
     var d = S.draft;
     if (!d) return;
     if (el.id === 'f-title') { d.title = el.value; showErr(''); }
-    else if (el.id === 'f-cat') { d.cat = el.value; showErr(''); }
+    else if (el.id === 'f-cat') { d.cat = el.value; showErr(''); var cs = $('catSug'); if (cs) cs.innerHTML = catSugHtml(catList(), el.value); }
     else if (el.id === 'f-notes') d.notes = el.value;
     else if (el.id === 'f-status') d.status = el.value;
     else if (el.hasAttribute('data-step-input')) {
@@ -2040,6 +2652,11 @@ body.resizing { cursor: col-resize; user-select: none; }
       moveSub(el.getAttribute('data-grip'), k === 'ArrowUp' ? -1 : 1);
       return;
     }
+    if (e.altKey && (k === 'ArrowUp' || k === 'ArrowDown') && el.classList && el.classList.contains('row')) {
+      e.preventDefault();
+      moveGoal(el.getAttribute('data-id'), k === 'ArrowUp' ? -1 : 1);
+      return;
+    }
     if (k === 'Escape') {
       if (S.clawd) { S.clawd = false; S.clawdMsg = ''; renderClawd(); }
       else if (S.menu) set({ menu: false });
@@ -2062,18 +2679,70 @@ body.resizing { cursor: col-resize; user-select: none; }
     }
   });
 
+  /* ---------- zoom keys and wheel ---------- */
+  window.addEventListener('keydown', function (e) {
+    if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+    var k = e.key;
+    if (k === '+' || k === '=' || k === 'Add') { e.preventDefault(); setZoom(S.zoom + 0.1); }
+    else if (k === '-' || k === '_' || k === 'Subtract') { e.preventDefault(); setZoom(S.zoom - 0.1); }
+    else if (k === '0') { e.preventDefault(); setZoom(1); }
+  }, true);
+  var gzT = 0, zAcc = 0;
+  window.addEventListener('wheel', function (e) {
+    if (e.ctrlKey || e.metaKey) {            // Ctrl + wheel, or a pinch: the whole app
+      e.preventDefault();
+      zAcc -= e.deltaY;
+      if (Math.abs(zAcc) >= 60) { setZoom(S.zoom + (zAcc > 0 ? 0.05 : -0.05)); zAcc = 0; }
+      return;
+    }
+    if (!e.target || e.target.id !== 'gl' || !e.deltaY) return;
+    e.preventDefault();                       // plain wheel over the stage: the globe only
+    // past the smallest globe, zooming out opens the universe (when there is more than one globe); zooming in closes it first
+    if (e.deltaY > 0 && S.gz <= 0.4501 && (S.globes || 1) > 1) { S.uzTo = Math.min(1, (S.uzTo || 0) + e.deltaY * 0.0016); return; }
+    if (e.deltaY < 0 && (S.uzTo || 0) > 0) { S.uzTo = Math.max(0, S.uzTo + e.deltaY * 0.0016); return; }
+    S.gz = Math.max(0.45, Math.min(1.15, S.gz * Math.exp(-e.deltaY * 0.0012)));
+    clearTimeout(gzT);
+    gzT = setTimeout(persist, 250);
+  }, { passive: false });
+  window.addEventListener('resize', function () {
+    var now = scr();
+    if (now.dpr !== lastScr.dpr && now.sw === lastScr.sw && now.sh === lastScr.sh && document.hasFocus && document.hasFocus()) {
+      S.zoom = Math.max(0.5, Math.min(1.6, S.zoom * now.dpr / lastScr.dpr));
+      persist();
+    }
+    lastScr = now;
+    applyZoom();
+  });
+
+  /* ---------- mascot: the bubble opens over the crab itself, not over the whole strip ---------- */
+  (function () {
+    var dock = $('clawd'), hitB = $('clawdBtn'), bub = $('clawdBubble'), t = 0;
+    if (!dock || !hitB || !bub) return;
+    function near(on) {
+      clearTimeout(t);
+      if (on) dock.classList.add('near');
+      else t = setTimeout(function () { dock.classList.remove('near'); }, 450);
+    }
+    hitB.addEventListener('pointerenter', function () { near(true); });
+    hitB.addEventListener('pointerleave', function () { near(false); });
+    bub.addEventListener('pointerenter', function () { if (dock.classList.contains('near')) near(true); });
+    bub.addEventListener('pointerleave', function () { near(false); });
+    document.addEventListener('compass-clawd', function (e) { if (clawdAct && e.detail) clawdAct(String(e.detail)); });
+  })();
+
   /* ---------- side panels: drag the inner edge to widen, double-click to reset ----------
-     Widths are not saved, so both panels open at their normal size every time. */
+     The details panel remembers its width; the goals panel opens at its normal size. */
   var PANEL = { side: { el: 'side', min: 220, max: 560, base: 270, dir: 1 }, detail: { el: 'detailPane', min: 260, max: 640, base: 300, dir: -1 } };
-  var rz = null;
+  var rz = null, pwT = 0;
   function setPanel(which, w) {
     var p = PANEL[which], el = $(p.el);
     w = Math.max(p.min, Math.min(p.max, Math.round(w)));
     if (w === p.base) { el.style.width = ''; el.style.flex = ''; }
     else { el.style.width = w + 'px'; el.style.flex = '0 0 ' + w + 'px'; }
+    if (which === 'detail') { S.pw = w === p.base ? 0 : w; clearTimeout(pwT); pwT = setTimeout(persist, 300); }
   }
-  function panelWidth(which) { return $(PANEL[which].el).getBoundingClientRect().width; }
-  function rzMove(e) { if (!rz) return; e.preventDefault(); setPanel(rz.which, rz.w0 + (e.clientX - rz.x0) * PANEL[rz.which].dir); }
+  function panelWidth(which) { return $(PANEL[which].el).getBoundingClientRect().width / ZF; }
+  function rzMove(e) { if (!rz) return; e.preventDefault(); setPanel(rz.which, rz.w0 + (e.clientX - rz.x0) / ZF * PANEL[rz.which].dir); }
   function rzEnd() {
     if (!rz) return;
     rz = null;
@@ -2098,14 +2767,29 @@ body.resizing { cursor: col-resize; user-select: none; }
     if (h) setPanel(h.getAttribute('data-resize'), PANEL[h.getAttribute('data-resize')].base);
   });
 
-  /* ---------- checklist drag: the handle carries a subtask and its steps ----------
+  /* ---------- drag to reorder: checklist lines, and goals in the side list ----------
      The carried row follows the pointer; the rows it passes slide out of its way.
-     The work happens once per frame, so the pointer never waits on layout. */
-  var drag = null, settling = false;
+     The work happens once per frame, so the pointer never waits on layout.
+     Places are read in screen pixels and written back in layout pixels (ZF apart),
+     so it also holds while the app is zoomed. */
+  var drag = null, settling = false, dragGuard = 0;
   var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function recolor(list) {
     var kids = list.children;
     for (var i = 0; i < kids.length; i++) kids[i].style.setProperty('--p', prio(i, kids.length));
+  }
+  function dragKids(d) {
+    var out = [], k = d.list.children;
+    for (var i = 0; i < k.length; i++) if (!d.only || k[i].classList.contains(d.only)) out.push(k[i]);
+    return out;
+  }
+  /* goals keep the same set of rank numbers; they are dealt out again in the new order */
+  function renumber() {
+    var d = drag, rows = dragKids(d);
+    for (var i = 0; i < rows.length; i++) {
+      var rk = rows[i].querySelector('.rk');
+      if (rk && d.nums[i]) { rk.textContent = d.nums[i][0]; rk.style.setProperty('--p', d.nums[i][1]); }
+    }
   }
   function dragFrame() {
     var d = drag;
@@ -2113,11 +2797,11 @@ body.resizing { cursor: col-resize; user-select: none; }
     d.raf = requestAnimationFrame(dragFrame);
     if (!d.moved) return;
     // near the top or bottom of the panel the list scrolls, faster the closer the pointer is
-    var box = $('detail'), br = box.getBoundingClientRect(), edge = 44;
+    var box = d.box, br = box.getBoundingClientRect(), edge = 44;
     if (d.y < br.top + edge) box.scrollTop -= Math.ceil((br.top + edge - d.y) / 4);
     else if (d.y > br.bottom - edge) box.scrollTop += Math.ceil((d.y - (br.bottom - edge)) / 4);
-    var kids = Array.prototype.slice.call(d.list.children), i, k;
-    var listTop = d.list.getBoundingClientRect().top, total = -d.gap;
+    var kids = dragKids(d), i, k;
+    var listTop = d.list === box ? br.top - box.scrollTop * ZF : d.list.getBoundingClientRect().top, total = -d.gap;
     for (i = 0; i < kids.length; i++) total += kids[i]._dh + d.gap;
     // the top edge of the carried row, kept inside the list
     var vt = Math.max(listTop - 6, Math.min(listTop + total - d.item._dh + 6, d.y - d.grab));
@@ -2129,27 +2813,28 @@ body.resizing { cursor: col-resize; user-select: none; }
       if (vt < acc + k._dh / 2) { target = k; break; }
       acc += k._dh + d.gap;
     }
-    if (target !== d.item.nextElementSibling) {
+    var spot = target || d.tail;
+    if (spot !== d.item.nextElementSibling) {
       var was = [];
       if (!calm) for (i = 0; i < kids.length; i++) if (kids[i] !== d.item) was.push([kids[i], kids[i].getBoundingClientRect().top]);
-      d.list.insertBefore(d.item, target);
-      recolor(d.list);
+      d.list.insertBefore(d.item, spot);
+      d.onMove(d.list);
       // each row that changed place starts where it was and slides to where it now belongs
       was.forEach(function (f) {
         f[0].style.transition = 'none';
         f[0].style.transform = '';
-        var dy = f[1] - f[0].getBoundingClientRect().top;
+        var dy = (f[1] - f[0].getBoundingClientRect().top) / ZF;
         f[0].style.transform = dy ? 'translateY(' + dy.toFixed(1) + 'px)' : '';
       });
       if (was.length) {
         void d.list.offsetHeight;
         was.forEach(function (f) { f[0].style.transition = 'transform .16s ease'; f[0].style.transform = ''; });
       }
-      kids = Array.prototype.slice.call(d.list.children);
+      kids = dragKids(d);
     }
     var top = listTop;
     for (i = 0; i < kids.length && kids[i] !== d.item; i++) top += kids[i]._dh + d.gap;
-    d.item.style.transform = 'translateY(' + (vt - top).toFixed(1) + 'px)';
+    d.item.style.transform = 'translateY(' + ((vt - top) / ZF).toFixed(1) + 'px)';
   }
   function dragMove(e) {
     if (!drag) return;
@@ -2171,25 +2856,35 @@ body.resizing { cursor: col-resize; user-select: none; }
       d.item.classList.remove('dragging');
     }
     if (!d.moved) { clean(); return; }
+    dragGuard = Date.now() + 400;
     if (e && e.type === 'pointercancel') { clean(); render(); return; }
-    var ids = [];
-    for (i = 0; i < kids.length; i++) ids.push(kids[i].getAttribute('data-ci'));
-    if (calm) { clean(); orderSubs(ids); return; }
+    var ids = [], rows = dragKids(d);
+    for (i = 0; i < rows.length; i++) ids.push(rows[i].getAttribute(d.attr));
+    if (calm) { clean(); d.done(ids); return; }
     // let go: the row glides into its slot, then the new order is saved
     settling = true;
     d.item.style.transition = 'transform .14s ease';
     d.item.style.transform = '';
-    setTimeout(function () { settling = false; clean(); orderSubs(ids); }, 150);
+    setTimeout(function () { settling = false; clean(); d.done(ids); }, 150);
   }
   app.addEventListener('pointerdown', function (e) {
-    var grip = e.target.closest ? e.target.closest('.grip') : null;
-    if (!grip || settling || drag || (e.pointerType === 'mouse' && e.button !== 0)) return;
-    var item = grip.closest('.ci');
+    if (settling || drag || (e.pointerType === 'mouse' && e.button !== 0) || !e.target.closest) return;
+    var grip = e.target.closest('.grip'), rk = grip ? null : e.target.closest('.rk[data-rk]');
+    if (!grip && !rk) return;
+    var item = grip ? grip.closest('.ci') : rk.closest('.row');
     if (!item) return;
-    var list = item.parentNode, kids = list.children;
-    for (var i = 0; i < kids.length; i++) kids[i]._dh = kids[i].offsetHeight;
-    drag = { item: item, list: list, y0: e.clientY, y: e.clientY, moved: false, raf: 0,
-      grab: e.clientY - item.getBoundingClientRect().top, gap: parseFloat(getComputedStyle(list).rowGap) || 0 };
+    var list = item.parentNode, i;
+    drag = { item: item, list: list, y0: e.clientY, y: e.clientY, moved: false, raf: 0, nums: [],
+      only: grip ? '' : 'rankable', attr: grip ? 'data-ci' : 'data-id', box: grip ? $('detail') : list,
+      onMove: grip ? recolor : renumber, done: grip ? orderSubs : orderGoals,
+      grab: e.clientY - item.getBoundingClientRect().top, gap: (parseFloat(getComputedStyle(list).rowGap) || 0) * ZF };
+    var kids = dragKids(drag);
+    for (i = 0; i < kids.length; i++) {
+      kids[i]._dh = kids[i].offsetHeight * ZF;
+      var r0 = kids[i].querySelector('.rk');
+      if (r0) drag.nums.push([r0.textContent, r0.style.getPropertyValue('--p')]);
+    }
+    drag.tail = kids.length ? kids[kids.length - 1].nextElementSibling : null;
     item.classList.add('dragging');
     document.body.classList.add('dragging-ci');
     document.addEventListener('pointermove', dragMove);
@@ -2209,6 +2904,8 @@ body.resizing { cursor: col-resize; user-select: none; }
   }
 
   initGlobe();
+  applyZoom();
+  if (S.pw) setPanel('detail', S.pw);
   render();
   startClawd();
 })();
